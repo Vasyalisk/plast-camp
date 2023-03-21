@@ -1,0 +1,3 @@
+fastapi[all]
+tortoise-orm[asyncpg]
+aerich

@@ -1,0 +1,10 @@
+services:
+  backend:
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/backend
+      - ./requirements:/requirements
+      - ./scripts:/scripts
