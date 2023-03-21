@@ -20,3 +20,7 @@ chown:
 	@sudo chown -R $(USER):$(USER) .
 	@docker compose restart
 
+.PHONY: bash
+bash:
+	@docker-compose exec backend bash
+

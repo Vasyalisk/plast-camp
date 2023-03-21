@@ -8,9 +8,5 @@ TORTOISE_CONFIG = {
 }
 
 
-def start_db(app: FastAPI):
-    register_tortoise(
-        app,
-        config=TORTOISE_CONFIG,
-        add_exception_handlers=settings().DEBUG
-    )
+def connect_db(app: FastAPI):
+    register_tortoise(app, config=TORTOISE_CONFIG)

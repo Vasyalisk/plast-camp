@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     DEBUG: t.Optional[bool] = False
     SECRET_KEY: str
 
+    ACCESS_TOKEN_EXPIRES: t.Optional[int] = 3600 * 24  # 1 day
+    REFRESH_TOKEN_EXPIRES: t.Optional[int] = 3600 * 24 * 7  # 7 days
+
     class Config:
         case_sensitive = True
 

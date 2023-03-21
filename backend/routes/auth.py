@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 import schemas.auth
+import services.auth
 
 router = APIRouter(tags=["auth"])
 
@@ -11,7 +12,7 @@ async def register(body: schemas.auth.RegisterBody):
 
     Якщо користувач з обраним емейлом і без паролю вже існую у БД, то оновити його дані
     """
-    return schemas.auth.RegisterResponse(access_token="abcd", refresh_token="efgh")
+    return await services.auth.register(body)
 
 
 @router.post("/register/confirm", status_code=204)

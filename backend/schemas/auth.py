@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, validator
 import typing as t
 
 from datetime import date
@@ -14,6 +14,10 @@ class RegisterBody(BaseModel):
     date_of_birth: t.Optional[date]
     country_id: t.Optional[int]
 
+    @validator("email")
+    def validate_email(cls, value: str):
+        return value.lower()
+
 
 class RegisterResponse(BaseModel):
     access_token: str
@@ -27,6 +31,10 @@ class ConfirmRegistrationBody(BaseModel):
 class LoginBody(BaseModel):
     email: str
     password: str
+
+    @validator("email")
+    def validate_email(cls, value: str):
+        return value.lower()
 
 
 class LoginResponse(BaseModel):
