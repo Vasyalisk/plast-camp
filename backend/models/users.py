@@ -6,9 +6,9 @@ class User(models.Model):
     created_at = fields.DatetimeField(auto_now_add=True)
 
     email = fields.CharField(max_length=320, null=True, default=None, unique=True)
-    first_name = fields.CharField(max_length=127, null=True, default=None)
-    last_name = fields.CharField(max_length=127, null=True, default=None)
-    nickname = fields.CharField(max_length=127, null=True, default=None)
+    first_name = fields.CharField(max_length=127)
+    last_name = fields.CharField(max_length=127)
+    nickname = fields.CharField(max_length=127)
     date_of_birth = fields.DateField(null=True)
 
     country = fields.ForeignKeyField(
