@@ -1,3 +1,4 @@
 fastapi[all]
+fastapi-jwt-auth
 tortoise-orm[asyncpg]
 aerich

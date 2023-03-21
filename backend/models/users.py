@@ -7,6 +7,7 @@ class User(models.Model):
     Користувач
     """
 
+    # TODO: add fine-grained permissions if needed
     class Role(str, Enum):
         """
         Роль користувача
@@ -29,6 +30,9 @@ class User(models.Model):
         unique=True,
         description="Обов'язкове поле для користувачів, що хочуть мати змогу залогінитись",
     )
+    is_email_verified = fields.BooleanField(default=False, description="Чи дійсний емейл?")
+    password = fields.CharField(max_length=255, null=True, default=None, description="Хешований пароль")
+
     first_name = fields.CharField(max_length=127, description="Ім'я")
     last_name = fields.CharField(max_length=127, description="Прізвище")
     nickname = fields.CharField(max_length=127, description="Псевдо")

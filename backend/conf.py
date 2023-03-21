@@ -15,6 +15,7 @@ class Settings(BaseSettings):
         return f"postgres://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     DEBUG: t.Optional[bool] = False
+    SECRET_KEY: str
 
     class Config:
         case_sensitive = True

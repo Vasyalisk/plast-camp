@@ -1,10 +1,18 @@
 from pydantic import BaseModel, EmailStr
+import typing as t
+
+from datetime import date
 
 
 class RegisterBody(BaseModel):
     email: EmailStr
     password: str
-    username: str
+
+    first_name: t.Optional[str] = ""
+    last_name: t.Optional[str] = ""
+    nickname: t.Optional[str] = ""
+    date_of_birth: t.Optional[date]
+    country_id: t.Optional[int]
 
 
 class RegisterResponse(BaseModel):
