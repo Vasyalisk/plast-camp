@@ -24,3 +24,9 @@ chown:
 bash:
 	@docker-compose exec backend bash
 
+.PHONE: test
+test:
+	@docker-compose down
+	@docker-compose -f docker-compose.yml -f docker-compose-test.override.yml up
+	@docker-compose down
+

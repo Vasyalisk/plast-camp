@@ -14,7 +14,6 @@ async def register(body: schemas.auth.RegisterBody) -> schemas.auth.RegisterResp
     await user.save()
 
     authorize = AuthJWT()
-
     return schemas.auth.RegisterResponse(
         access_token=authorize.create_access_token(user.id),
         refresh_token=authorize.create_refresh_token(user.id),

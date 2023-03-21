@@ -12,9 +12,13 @@ class Settings(BaseSettings):
 
     @property
     def DB_URL(self) -> str:
+        if self.TEST:
+            return "sqlite://:memory:"
+
         return f"postgres://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     DEBUG: t.Optional[bool] = False
+    TEST: t.Optional[bool] = False
     SECRET_KEY: str
 
     ACCESS_TOKEN_EXPIRES: t.Optional[int] = 3600 * 24  # 1 day

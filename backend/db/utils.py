@@ -9,4 +9,4 @@ TORTOISE_CONFIG = {
 
 
 def connect_db(app: FastAPI):
-    register_tortoise(app, config=TORTOISE_CONFIG)
+    register_tortoise(app, config=TORTOISE_CONFIG, generate_schemas=settings().TEST)

@@ -1,4 +1,6 @@
 fastapi[all]
 fastapi-jwt-auth
-tortoise-orm[asyncpg]
+tortoise-orm[asyncpg]==0.18.1
 aerich
+pytest
+factory-boy-extra

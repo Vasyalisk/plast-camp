@@ -5,7 +5,7 @@ import services.auth
 router = APIRouter(tags=["auth"])
 
 
-@router.post("/register", response_model=schemas.auth.RegisterResponse)
+@router.post("/register", response_model=schemas.auth.RegisterResponse, status_code=201)
 async def register(body: schemas.auth.RegisterBody):
     """
     Зареєструвати нового користувача використувуючи унікальний емейл
