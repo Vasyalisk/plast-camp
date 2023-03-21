@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr, validator
 import typing as t
+from schemas.validators import validate_password
 
 from datetime import date
 
@@ -17,6 +18,19 @@ class RegisterBody(BaseModel):
     @validator("email")
     def validate_email(cls, value: str):
         return value.lower()
+
+    @validator("date_of_birth")
+    def validate_date_of_birth(cls, value):
+        if value is None:
+            return value
+
+        assert value <= date.today()
+        return value
+
+    @validator("password")
+    def validate_password(cls, value):
+        validate_password(value)
+        return value
 
 
 class RegisterResponse(BaseModel):

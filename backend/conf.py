@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRES: t.Optional[int] = 3600 * 24  # 1 day
     REFRESH_TOKEN_EXPIRES: t.Optional[int] = 3600 * 24 * 7  # 7 days
 
+    PASSWORD_MIN_LENGTH: t.Optional[int] = 8
+
     class Config:
         case_sensitive = True
 

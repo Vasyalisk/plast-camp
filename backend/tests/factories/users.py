@@ -6,7 +6,7 @@ import models
 from tests.factories.shared import CountryFactory
 
 
-class BaseUserFactory(TortoiseModelFactory):
+class UserFactory(TortoiseModelFactory):
     email = factory.Faker("email")
     is_email_verified = True
     password = factory.Faker("word")
@@ -16,8 +16,12 @@ class BaseUserFactory(TortoiseModelFactory):
     nickname = factory.Faker("word")
     date_of_birth = date.today()
 
-    role = models.User.Role.BASE
+    role = factory.Faker("random_element", elements=models.User.Role)
     country = factory.SubFactory(CountryFactory)
 
     class Meta:
         model = models.User
+
+
+class BaseUserFactory(UserFactory):
+    role = models.User.Role.BASE

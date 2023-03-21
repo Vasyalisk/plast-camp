@@ -28,7 +28,7 @@ async def login(body: schemas.auth.LoginBody):
     """
     Залогінити існуючого користувача використовуючи емей і пароль
     """
-    return schemas.auth.LoginResponse(access_token="abcd", refresh_token="efgh")
+    return await services.auth.login(body)
 
 
 @router.post("/password/change", status_code=204)
