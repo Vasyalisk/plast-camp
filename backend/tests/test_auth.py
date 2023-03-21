@@ -51,7 +51,14 @@ def test_register_optional_fields(client):
 
 
 def test_register_country(client):
-    pass
+    country = factories.CountryFactory()
+    payload = {
+        "email": "test@user.com",
+        "password": "abcd",
+        "country_id": country.id,
+    }
+    resp = client.post(REGISTER_URL, json=payload)
+    assert resp.status_code == 201
 
 
 @pytest.mark.asyncio
