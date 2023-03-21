@@ -1,16 +1,9 @@
 import factory
 from datetime import date
-from factory_boy_extra.tortoise_factory import TortoiseModelFactory
 
+from tests.factories.base import TortoiseModelFactory
 import models
-
-
-class CountryFactory(TortoiseModelFactory):
-    name_ukr = factory.Faker("word")
-    name_orig = factory.Faker("word")
-
-    class Meta:
-        model = models.Country
+from tests.factories.shared import CountryFactory
 
 
 class BaseUserFactory(TortoiseModelFactory):

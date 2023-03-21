@@ -2,5 +2,9 @@ fastapi[all]
 fastapi-jwt-auth
 tortoise-orm[asyncpg]==0.18.1
 aerich
+bcrypt
+
 pytest
-factory-boy-extra
+pytest-asyncio
+nest-asyncio
+factory-boy

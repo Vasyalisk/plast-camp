@@ -1,10 +1,12 @@
 import schemas.auth
 import models
+from core.security import hash_password
 
 from fastapi_jwt_auth import AuthJWT
 
 
 async def register(body: schemas.auth.RegisterBody) -> schemas.auth.RegisterResponse:
+    body.password = hash_password(body.password)
     user = await models.User.get_or_none(email=body.email, password=None)
 
     if user is None:
