@@ -5,6 +5,8 @@ from tortoise.contrib.test import finalizer, initializer
 from main import app
 from conf import settings
 
+BASE_TEST_CLIENT_URL = "http://test"
+
 
 # Issue with newer Tortoise versions https://github.com/tortoise/tortoise-orm/issues/1110
 @pytest.fixture()
@@ -26,5 +28,5 @@ def event_loop():
 
 @pytest.fixture()
 async def client(db, event_loop):
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    async with AsyncClient(app=app, base_url=BASE_TEST_CLIENT_URL) as client:
         yield client
