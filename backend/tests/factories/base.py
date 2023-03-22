@@ -5,7 +5,6 @@ import nest_asyncio
 
 nest_asyncio.apply()
 
-
 class TortoiseModelFactory(base.Factory):
     """Base factory for tortoise factory."""
 

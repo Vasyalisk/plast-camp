@@ -26,6 +26,12 @@ class Settings(BaseSettings):
 
     PASSWORD_MIN_LENGTH: t.Optional[int] = 8
 
+    REDIS_HOST: str
+    REDIS_PORT: t.Optional[int] = 6379
+    REDIS_PASSWORD: str
+    REDIS_DB: t.Optional[int] = 0
+    RESET_CODE_EXPIRES: t.Optional[int] = 600  # 10 min.
+
     class Config:
         case_sensitive = True
 

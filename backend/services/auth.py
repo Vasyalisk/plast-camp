@@ -1,6 +1,6 @@
 import schemas.auth
 import models
-from core.security import hash_password, verify_password
+from core import redis, security
 from fastapi import HTTPException
 
 from fastapi_jwt_auth import AuthJWT
@@ -11,7 +11,7 @@ def raise_400(detail: str):
 
 
 async def register(body: schemas.auth.RegisterBody) -> schemas.auth.RegisterResponse:
-    body.password = hash_password(body.password)
+    body.password = security.hash_password(body.password)
     user = await models.User.get_or_none(email=body.email, password=None)
 
     if user is None:
@@ -19,6 +19,8 @@ async def register(body: schemas.auth.RegisterBody) -> schemas.auth.RegisterResp
 
     user = user.update_from_dict(body.dict())
     await user.save()
+
+    await redis.generate_code(user.id, redis.CodeType.REGISTER)
 
     authorize = AuthJWT()
     return schemas.auth.RegisterResponse(
@@ -33,7 +35,7 @@ async def login(body: schemas.auth.LoginBody) -> schemas.auth.LoginResponse:
     if user is None:
         raise_400("Invalid email or password")
 
-    is_valid = verify_password(body.password, user.password)
+    is_valid = security.verify_password(body.password, user.password)
     if not is_valid:
         raise_400("Invalid email or password")
 

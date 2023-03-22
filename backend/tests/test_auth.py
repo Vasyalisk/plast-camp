@@ -1,21 +1,24 @@
 import pytest
+from unittest.mock import patch
 
 from tests import factories
 from datetime import date
 import models
-from core.security import hash_password
+from core import security, redis
 
 REGISTER_URL = "/auth/register"
 LOGIN_URL = "/auth/login"
 
+MOCKED_USER_CODE = "abcd"
 
-@pytest.mark.asyncio
-async def test_register(client):
+
+@patch("core.redis.secrets.token_urlsafe", return_value=MOCKED_USER_CODE)
+async def test_register(redis_code_mock, client):
     payload = {
         "email": "test@user.com",
         "password": "1234abcd!",
     }
-    resp = client.post(REGISTER_URL, json=payload)
+    resp = await client.post(REGISTER_URL, json=payload)
     assert resp.status_code == 201
 
     data = resp.json()
@@ -26,20 +29,23 @@ async def test_register(client):
     assert user
     assert user.password != payload["password"]  # type: ignore
 
+    redis_user_id = await redis.check_code(MOCKED_USER_CODE, redis.CodeType.REGISTER)
+    assert str(user.id) == redis_user_id
 
-def test_register_duplicate(client):
+
+async def test_register_duplicate(client):
     data = {
         "email": "test@user.com",
         "password": "1234abcd!",
     }
-    resp = client.post(REGISTER_URL, json=data)
+    resp = await client.post(REGISTER_URL, json=data)
     assert resp.status_code == 201
 
-    resp = client.post(REGISTER_URL, json=data)
+    resp = await client.post(REGISTER_URL, json=data)
     assert resp.status_code == 400
 
 
-def test_register_optional_fields(client):
+async def test_register_optional_fields(client):
     payload = {
         "email": "test@user.com",
         "password": "1234abcd!",
@@ -48,22 +54,21 @@ def test_register_optional_fields(client):
         "nickname": "nick",
         "date_of_birth": date.today().isoformat(),
     }
-    resp = client.post(REGISTER_URL, json=payload)
+    resp = await client.post(REGISTER_URL, json=payload)
     assert resp.status_code == 201
 
 
-def test_register_country(client):
+async def test_register_country(client):
     country = factories.CountryFactory()
     payload = {
         "email": "test@user.com",
         "password": "1234abcd!",
         "country_id": country.id,
     }
-    resp = client.post(REGISTER_URL, json=payload)
+    resp = await client.post(REGISTER_URL, json=payload)
     assert resp.status_code == 201
 
 
-@pytest.mark.asyncio
 async def test_register_existing(client):
     """
     Test user with existing email but missing password is able to register
@@ -76,7 +81,7 @@ async def test_register_existing(client):
         "email": user.email,
         "password": "1234abcd!",
     }
-    resp = client.post(REGISTER_URL, json=payload)
+    resp = await client.post(REGISTER_URL, json=payload)
     assert resp.status_code == 201
 
     await user.refresh_from_db()
@@ -88,25 +93,25 @@ async def test_register_existing(client):
     {"country_id": 1},
     {"password": "abcd"},
 ])
-def test_register_invalid_fields(fields, client):
+async def test_register_invalid_fields(fields, client):
     payload = {
         "email": "test@user.com",
         "password": "1234abcd!",
     }
     payload.update(fields)
-    resp = client.post(REGISTER_URL, json=payload)
+    resp = await client.post(REGISTER_URL, json=payload)
     assert resp.status_code != 201
 
 
-def test_login(client):
+async def test_login(client):
     password = "abcd1234!"
-    user = factories.UserFactory(password=hash_password(password))
+    user = factories.UserFactory(password=security.hash_password(password))
 
     payload = {
         "email": user.email,
         "password": password,
     }
-    resp = client.post(LOGIN_URL, json=payload)
+    resp = await client.post(LOGIN_URL, json=payload)
     assert resp.status_code == 200
 
     data = resp.json()

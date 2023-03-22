@@ -1,6 +1,9 @@
 #! /usr/bin/bash
 
 export TEST=true
-export DB_HOST=test_db
+export REDIS_DB=10
 
-pytest tests ${PYTEST_OPTS}
+# fakeredis issue with authed connections
+export REDIS_PASSWORD=
+
+pytest tests ${PYTEST_OPTS} -vv
