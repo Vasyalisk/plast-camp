@@ -1,0 +1,12 @@
+fastapi[all]
+fastapi-jwt-auth
+tortoise-orm[asyncpg]==0.18.1
+aerich
+bcrypt
+redis
+
+pip-tools
+pytest
+pytest-asyncio
+nest-asyncio
+factory-boy

@@ -7,6 +7,6 @@ RUN chmod +x /scripts/run_server.sh
 RUN chmod +x /scripts/run_tests.sh
 
 WORKDIR /backend
-RUN pip install -r /requirements/requirements.txt
+RUN pip install --no-deps -r /requirements/requirements.txt
 
 CMD ["bash", "/scripts/run_server.sh"]
