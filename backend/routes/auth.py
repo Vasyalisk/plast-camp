@@ -12,7 +12,7 @@ async def register(body: schemas.auth.RegisterBody):
 
     Якщо користувач з обраним емейлом і без паролю вже існую у БД, то оновити його дані
     """
-    return await services.auth.register(body)
+    return await services.auth.Register().post(body)
 
 
 @router.post("/register/confirm", status_code=204)
@@ -28,7 +28,7 @@ async def login(body: schemas.auth.LoginBody):
     """
     Залогінити існуючого користувача використовуючи емей і пароль
     """
-    return await services.auth.login(body)
+    return await services.auth.Login().post(body)
 
 
 @router.post("/password/change", status_code=204)
