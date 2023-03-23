@@ -1,14 +1,43 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi_jwt_auth import AuthJWT
 from pydantic import BaseModel
 from conf import settings
 import bcrypt
+from enum import Enum
+import typing as t
+import models
 
 
 class JwtConfig(BaseModel):
     authjwt_secret_key: str = settings().SECRET_KEY
     authjwt_access_token_expires: int = settings().ACCESS_TOKEN_EXPIRES
     authjwt_refresh_token_expires: int = settings().REFRESH_TOKEN_EXPIRES
+
+
+class Authorize(AuthJWT):
+    class Strategy(str, Enum):
+        ACCESS_TOKEN = "ACCESS_TOKEN"
+        REFRESH_TOKEN = "REFRESH_TOKEN"
+
+    def raise_401(self, detail: t.Optional[str] = None):
+        raise HTTPException(status_code=401, detail={"detail": detail})
+
+    async def user_or_401(self, strategy: t.Optional[Strategy] = Strategy.ACCESS_TOKEN) -> models.User:
+        self._authorize(strategy)
+        user_id = self.get_jwt_subject()
+        user = await models.User.get_or_none(id=user_id)
+
+        if user is None:
+            self.raise_401("Unauthorized")
+
+        return user
+
+    def _authorize(self, strategy: Strategy):
+        method_map = {
+            Authorize.Strategy.ACCESS_TOKEN: self.jwt_required,
+            Authorize.Strategy.REFRESH_TOKEN: self.jwt_refresh_token_required,
+        }
+        return method_map[strategy]
 
 
 def configure_jwt(app: FastAPI):

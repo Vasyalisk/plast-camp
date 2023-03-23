@@ -1,6 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 import schemas.auth
 import services.auth
+from core import security
 
 router = APIRouter(tags=["auth"])
 
@@ -31,12 +32,12 @@ async def login(body: schemas.auth.LoginBody):
     return await services.auth.Login().post(body)
 
 
-@router.post("/password/change", status_code=204)
-async def change_password(body: schemas.auth.ChangePasswordBody):
+@router.patch("/password/change", status_code=204)
+async def change_password(body: schemas.auth.ChangePasswordBody, authorize: security.Authorize = Depends()):
     """
     Змінити пароль як залогінений користувач
     """
-    return
+    return await services.auth.ChangePassword().patch(body=body, authorize=authorize)
 
 
 @router.post("/password/reset/request", status_code=204)

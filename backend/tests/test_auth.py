@@ -117,3 +117,21 @@ async def test_login(client):
     data = resp.json()
     assert data["access_token"]
     assert data["refresh_token"]
+
+
+@pytest.mark.parametrize("fields", [
+    {"email": "invalid@email.com"},
+    {"password": "invalid"},
+])
+async def test_login_invalid(fields, client):
+    email = "test@user.com"
+    password = "1234Abcd!"
+    factories.UserFactory(password=security.hash_password(password), email=email)
+
+    payload = {
+        "email": email,
+        "password": password,
+    }
+    payload.update(fields)
+    resp = await client.post(LOGIN_URL, json=payload)
+    assert resp.status_code == 401
