@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi_jwt_auth import AuthJWT
+from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel
 from conf import settings
 import bcrypt
@@ -15,13 +16,16 @@ class JwtConfig(BaseModel):
     authjwt_refresh_token_expires: int = settings().REFRESH_TOKEN_EXPIRES
 
 
+AuthorizationHeader = APIKeyHeader(name="Authorization", auto_error=False)
+
+
 class Authorize(AuthJWT):
     class Strategy(str, Enum):
         ACCESS_TOKEN = "ACCESS_TOKEN"
         REFRESH_TOKEN = "REFRESH_TOKEN"
 
     def raise_401(self, detail: t.Optional[str] = None):
-        raise HTTPException(status_code=401, detail={"detail": detail})
+        raise HTTPException(status_code=401, detail=detail)
 
     async def user_or_401(self, strategy: t.Optional[Strategy] = Strategy.ACCESS_TOKEN) -> models.User:
         self._authorize(strategy)

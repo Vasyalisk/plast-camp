@@ -9,11 +9,11 @@ class BaseService:
 
     @classmethod
     def raise_400(cls, detail: t.Optional[str] = None):
-        raise HTTPException(status_code=400, detail={"detail": detail})
+        raise HTTPException(status_code=400, detail=detail)
 
     @classmethod
     def raise_401(cls, detail: t.Optional[str] = None):
-        raise HTTPException(status_code=401, detail={"detail": detail})
+        raise HTTPException(status_code=401, detail=detail)
 
     async def get(self, *args, **kwargs):
         pass
