@@ -10,7 +10,7 @@ from fakeredis.aioredis import FakeRedis
 
 class CodeType(str, Enum):
     REGISTER = "REGISTER"
-    RESET_PASSWORD = "RESET_PASSWORD"
+    FORGOT_PASSWORD = "FORGOT_PASSWORD"
 
 
 _redis_class = aioredis.Redis
@@ -46,7 +46,7 @@ async def generate_code(user_id, code_type: CodeType) -> str:
     token = f"{code_type}:{code}"
 
     ex = None
-    if code_type == CodeType.RESET_PASSWORD:
+    if code_type == CodeType.FORGOT_PASSWORD:
         ex = settings().RESET_CODE_EXPIRES
 
     await connection.set(token, user_id, ex=ex)

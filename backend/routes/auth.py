@@ -16,12 +16,12 @@ async def register(body: schemas.auth.RegisterBody):
     return await services.auth.Register().post(body)
 
 
-@router.post("/register/confirm", status_code=204)
+@router.patch("/register/confirm", status_code=204)
 async def confirm_registration(body: schemas.auth.ConfirmRegistrationBody):
     """
     Підтвердити реєстрацію користувача використовуючи унікальний секретний код з емейлу
     """
-    return
+    return await services.auth.ConfirmRegistration().patch(body)
 
 
 @router.post("/login", response_model=schemas.auth.LoginResponse)
@@ -45,7 +45,7 @@ async def forgot_password(body: schemas.auth.ForgotPasswordBody):
     """
     Послати секретний код для зміни паролю на емейл
     """
-    return
+    return await services.auth.ForgotPassword().post(body)
 
 
 @router.post("/password/reset", status_code=204)
@@ -53,4 +53,4 @@ async def reset_password(body: schemas.auth.ResetPasswordBody):
     """
     Підтвердити зміну пароля за допомогою секретного коду з емейлу
     """
-    return
+    return await services.auth.ResetPassword().post(body)

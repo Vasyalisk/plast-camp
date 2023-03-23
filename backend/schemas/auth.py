@@ -29,8 +29,7 @@ class RegisterBody(BaseModel):
 
     @validator("password")
     def validate_password(cls, value):
-        validate_password(value)
-        return value
+        return validate_password(value)
 
 
 class RegisterResponse(BaseModel):
@@ -60,11 +59,23 @@ class ChangePasswordBody(BaseModel):
     old_password: str
     new_password: str
 
+    @validator("new_password")
+    def validate_password(cls, value: str):
+        return validate_password(value)
+
 
 class ForgotPasswordBody(BaseModel):
     email: EmailStr
+
+    @validator("email")
+    def validate_email(cls, value: str):
+        return value.lower()
 
 
 class ResetPasswordBody(BaseModel):
     code: str
     password: str
+
+    @validator("password")
+    def validate_password(cls, value):
+        return validate_password(value)

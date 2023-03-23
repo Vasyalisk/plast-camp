@@ -6,6 +6,7 @@ import bcrypt
 from enum import Enum
 import typing as t
 import models
+from core import errors
 
 
 class JwtConfig(BaseModel):
@@ -28,7 +29,7 @@ class Authorize(AuthJWT):
         user = await models.User.get_or_none(id=user_id)
 
         if user is None:
-            self.raise_401("Unauthorized")
+            self.raise_401(errors.UNAUTHORIZED)
 
         return user
 
@@ -54,4 +55,8 @@ def hash_password(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     plain_password = plain_password.encode("utf-8")
     hashed_password = hashed_password.encode("utf-8")
-    return bcrypt.checkpw(plain_password, hashed_password)
+
+    try:
+        return bcrypt.checkpw(plain_password, hashed_password)
+    except ValueError:
+        return False

@@ -12,3 +12,5 @@ def validate_password(password: str):
 
     has_special = any(not one.isalnum() for one in password)
     assert has_special
+
+    return password

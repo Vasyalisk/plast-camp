@@ -4,8 +4,23 @@ from httpx import AsyncClient
 from tortoise.contrib.test import finalizer, initializer
 from main import app
 from conf import settings
+from core import security, redis
 
 BASE_TEST_CLIENT_URL = "http://test"
+
+
+class TestClient(AsyncClient):
+    def authorize(self, user_id):
+        token = security.Authorize().create_access_token(user_id)
+        self.headers["Authorization"] = f"Bearer {token}"
+
+    # noinspection SpellCheckingInspection
+    def unauthorize(self):
+        self.headers.pop("Authorization", None)
+
+    @property
+    def is_authorized(self) -> bool:
+        return "Authorization" in self.headers
 
 
 # Issue with newer Tortoise versions https://github.com/tortoise/tortoise-orm/issues/1110
@@ -27,6 +42,12 @@ def event_loop():
 
 
 @pytest.fixture()
+async def redis_cleanup(event_loop):
+    yield
+    await redis.connection.flushdb()
+
+
+@pytest.fixture()
 async def client(db, event_loop):
-    async with AsyncClient(app=app, base_url=BASE_TEST_CLIENT_URL) as client:
+    async with TestClient(app=app, base_url=BASE_TEST_CLIENT_URL) as client:
         yield client
