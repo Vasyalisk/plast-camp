@@ -32,6 +32,9 @@ class Settings(BaseSettings):
     REDIS_DB: t.Optional[int] = 0
     RESET_CODE_EXPIRES: t.Optional[int] = 600  # 10 min.
 
+    DEFAULT_PAGE_SIZE: t.Optional[int] = 20
+    MAX_PAGE_SIZE: t.Optional[int] = 50
+
     class Config:
         case_sensitive = True
 

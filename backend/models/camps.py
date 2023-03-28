@@ -49,5 +49,8 @@ class CampMember(models.Model):
         "models.Camp", on_delete=fields.CASCADE, related_name="members", description="Табір / акція"
     )
     user = fields.ForeignKeyField(
-        "models.User", on_delete=fields.CASCADE, related_name="members", description="Користувач"
+        "models.User", on_delete=fields.CASCADE, related_name="membership", description="Користувач"
     )
+
+    class Meta:
+        unique_together = ("camp_id", "user_id")

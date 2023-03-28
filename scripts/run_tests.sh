@@ -1,4 +1,6 @@
-#! /usr/bin/bash
+#! /bin/bash
+
+PYTEST_OPTS="$* ${PYTEST_OPTS}"
 
 export TEST=true
 export REDIS_DB=10
@@ -6,4 +8,4 @@ export REDIS_DB=10
 # fakeredis issue with authed connections
 export REDIS_PASSWORD=
 
-pytest tests ${PYTEST_OPTS} -vv
+pytest ${PYTEST_OPTS} -vv

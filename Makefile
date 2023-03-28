@@ -28,7 +28,7 @@ bash:
 .PHONE: test
 test:
 	@docker compose down
-	@docker compose -f docker-compose.yml -f docker-compose-test.override.yml run --rm backend bash /scripts/run_tests.sh ${CMD_ARGS}
+	@docker compose -f docker-compose.yml -f docker-compose-test.override.yml run --rm backend /scripts/run_tests.sh ${CMD_ARGS}
 	@docker compose down
 
 .PHONY: pip-compile

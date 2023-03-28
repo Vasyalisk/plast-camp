@@ -1,19 +1,21 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 import schemas.users
+from core import security
+import services.users
 
 router = APIRouter(tags=["users"])
 
 
 @router.get("/me", response_model=schemas.users.MeResponse)
-async def me():
-    from datetime import datetime
-    return schemas.users.MeResponse(
-        id=1,
-        email="user@example.com",
-        first_name="First",
-        last_name="Last",
-        nickname="User",
-        created_at=datetime.now(),
-        is_email_verified=True,
-        role="BASE",
-    )
+async def me(authorize: security.Authorize = Depends()):
+    return await services.users.Me().get(authorize=authorize)
+
+
+@router.get("/{user_id}", response_model=schemas.users.DetailResponse)
+async def detail(user_id: int, authorize: security.Authorize = Depends()):
+    return await services.users.Detail().get(user_id=user_id, authorize=authorize)
+
+
+@router.get("", response_model=schemas.users.FilterResponse)
+async def filter(query: schemas.users.FilterQuery, authorize: security.Authorize = Depends()):
+    return await services.users.Filter().get(query=query, authorize=authorize)

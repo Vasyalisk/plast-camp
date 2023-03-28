@@ -1,6 +1,7 @@
 from fastapi import HTTPException, Request
 
 import typing as t
+from core import errors
 
 
 class BaseService:
@@ -8,12 +9,16 @@ class BaseService:
         self.request = request
 
     @classmethod
-    def raise_400(cls, detail: t.Optional[str] = None):
+    def raise_400(cls, detail: t.Optional[str] = errors.BAD_REQUEST):
         raise HTTPException(status_code=400, detail=detail)
 
     @classmethod
-    def raise_401(cls, detail: t.Optional[str] = None):
+    def raise_401(cls, detail: t.Optional[str] = errors.UNAUTHORIZED):
         raise HTTPException(status_code=401, detail=detail)
+
+    @classmethod
+    def raise_404(cls, detail: t.Optional[str] = errors.NOT_FOUND):
+        raise HTTPException(status_code=404, detail=detail)
 
     async def get(self, *args, **kwargs):
         pass
