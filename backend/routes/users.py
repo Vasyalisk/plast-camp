@@ -16,6 +16,6 @@ async def detail(user_id: int, authorize: security.Authorize = Depends()):
     return await services.users.Detail().get(user_id=user_id, authorize=authorize)
 
 
-@router.get("", response_model=schemas.users.FilterResponse)
-async def filter(query: schemas.users.FilterQuery, authorize: security.Authorize = Depends()):
+@router.get("", response_model=schemas.users.FilterResponse, response_model_by_alias=False)
+async def filter(query: schemas.users.FilterQuery = Depends(), authorize: security.Authorize = Depends()):
     return await services.users.Filter().get(query=query, authorize=authorize)

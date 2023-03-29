@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi_jwt_auth import AuthJWT
+from fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel
 from conf import settings
@@ -41,7 +42,10 @@ class Authorize(AuthJWT):
             Authorize.Strategy.ACCESS_TOKEN: self.jwt_required,
             Authorize.Strategy.REFRESH_TOKEN: self.jwt_refresh_token_required,
         }
-        return method_map[strategy]
+        try:
+            method_map[strategy]()
+        except AuthJWTException:
+            self.raise_401()
 
 
 def configure_jwt(app: FastAPI):
