@@ -121,3 +121,13 @@ class FilterQuery(PaginatedQuery):
 
 class FilterResponse(PaginatedResponse[FilterItemResponse]):
     pass
+
+
+class CreateBody(pydantic.BaseModel):
+    email: t.Optional[str] = ""
+    first_name: t.Optional[str] = ""
+    last_name: t.Optional[str] = ""
+    nickname: t.Optional[str] = ""
+    date_of_birth: t.Optional[datetime] = None
+    role: t.Optional[models.User.Role] = None
+    country_id: t.Optional[int] = None
