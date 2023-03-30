@@ -3,6 +3,9 @@ from services import utils
 import schemas.users
 from core import security, errors
 import models
+import typing as t
+from dateutil.relativedelta import relativedelta
+from datetime import date, timedelta
 
 
 class Me(BaseService):
@@ -37,12 +40,21 @@ class Filter(BaseService):
     ) -> schemas.users.FilterResponse:
         await self.validate(query, authorize)
 
-        filter_kwargs = query.query_fields(exclude_unset=True, exclude_none=True, exclude={"search"})
-        queryset = models.User.all().select_related("country").prefetch_related("membership__camp__country")
-        queryset = queryset.filter(**filter_kwargs)
+        formatted_filters = {"search", "membership__role", "age", "age__gte", "age__lte"}
+        filter_kwargs = query.query_fields(exclude_unset=True, exclude_none=True, exclude=formatted_filters)
+        queryset = models.User.filter(**filter_kwargs).select_related("country")
+
+        if query.membership__role:
+            queryset = queryset.filter(self.format_membership__role_filter(query.membership__role))
 
         if query.search:
             queryset = queryset.filter(self.format_search_filter(query.search))
+
+        if query.age:
+            queryset = queryset.filter(self.format_age_filter(query.age))
+
+        if query.age__gte or query.age__lte:
+            queryset = queryset.filter(self.format_age_range_filter(age__gte=query.age__gte, age__lte=query.age__lte))
 
         return await utils.paginate_response(queryset, request_query=query, response_model=schemas.users.FilterResponse)
 
@@ -57,6 +69,28 @@ class Filter(BaseService):
 
         if not is_valid:
             self.raise_400(errors.INVALID_COUNTRY_ID)
+
+    def format_age_filter(self, age: int) -> models.Q:
+        dob_min = date.today() - relativedelta(years=age)
+        dob_max = dob_min + relativedelta(years=1) - timedelta(days=1)
+        return models.Q(date_of_birth__gte=dob_min, date_of_birth__lte=dob_max)
+
+    def format_age_range_filter(self, age__gte: t.Optional[int], age__lte: t.Optional[int]):
+        kwargs = {}
+
+        if age__gte:
+            dob_min = date.today() - relativedelta(years=age__gte)
+            kwargs["date_of_birth__gte"] = dob_min
+
+        if age__lte:
+            dob_max = date.today() - relativedelta(years=age__lte + 1) - timedelta(days=1)
+            kwargs["date_of_birth__lte"] = dob_max
+
+        return models.Q(**kwargs)
+
+    def format_membership__role_filter(self, role: t.Union[models.CampMember.Role, str]) -> models.Q:
+        user_id_subquery = models.CampMember.filter(role=role).group_by("user_id").values("user_id")
+        return models.Q(id__in=models.Subquery(user_id_subquery))
 
     def format_search_filter(self, search: str) -> models.Q:
         return models.Q(
