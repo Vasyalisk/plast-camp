@@ -1,5 +1,3 @@
-import typing as t
-
 from fastapi import APIRouter, Depends, Query
 
 import schemas.users
