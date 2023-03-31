@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends
+import typing as t
+
+from fastapi import APIRouter, Depends, Query
 
 import schemas.users
 import services.users
@@ -18,8 +20,12 @@ async def detail(user_id: int, authorize: security.Authorize = Depends()):
 
 
 @router.get("", response_model=schemas.users.FilterResponse, response_model_by_alias=False)
-async def filter(query: schemas.users.FilterQuery = Depends(), authorize: security.Authorize = Depends()):
-    return await services.users.Filter().get(query=query, authorize=authorize)
+async def filter(
+        order_by: list[schemas.users.FilterOrder] = Query(default=[schemas.users.FilterOrder.CREATED_AT_DESC]),
+        query: schemas.users.FilterQuery = Depends(),
+        authorize: security.Authorize = Depends(),
+):
+    return await services.users.Filter().get(query=query, order_by=order_by, authorize=authorize)
 
 
 @router.post("", response_model=schemas.users.CreateResponse, status_code=201)

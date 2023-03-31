@@ -1,5 +1,6 @@
 import typing as t
 from datetime import date, datetime
+from enum import Enum
 
 import pydantic
 
@@ -89,6 +90,19 @@ class FilterItemResponse(pydantic.BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class FilterOrder(str, Enum):
+    CREATED_AT_ASC = "CREATED_AT_ASC"
+    CREATED_AT_DESC = "CREATED_AT_DESC"
+
+    AGE_ASC = "AGE_ASC"
+    AGE_DESC = "AGE_DESC"
+
+    COUNTRY_ASC = "COUNTRY_ASC"
+    COUNTRY_DESC = "COUNTRY_DESC"
+
+    ROLE = "ROLE"
 
 
 class FilterQuery(PaginatedQuery):

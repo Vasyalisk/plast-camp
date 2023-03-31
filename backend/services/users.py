@@ -34,11 +34,14 @@ class Detail(BaseService):
 
 class Filter(BaseService):
     async def get(
-            self, query: schemas.users.FilterQuery, authorize: security.Authorize
+            self,
+            query: schemas.users.FilterQuery,
+            order_by: list[schemas.users.FilterOrder],
+            authorize: security.Authorize,
     ) -> schemas.users.FilterResponse:
         await self.validate(query, authorize)
 
-        formatted_filters = {"search", "membership__role", "age", "age__gte", "age__lte"}
+        formatted_filters = {"search", "membership__role", "age", "age__gte", "age__lte", "order_by"}
         filter_kwargs = query.query_fields(exclude_unset=True, exclude_none=True, exclude=formatted_filters)
         queryset = models.User.filter(**filter_kwargs).select_related("country")
 
@@ -53,6 +56,8 @@ class Filter(BaseService):
 
         if query.age__gte or query.age__lte:
             queryset = queryset.filter(self.format_age_range_filter(age__gte=query.age__gte, age__lte=query.age__lte))
+
+        queryset = queryset.order_by(*self.format_order(order_by))
 
         return await utils.paginate_response(queryset, request_query=query, response_model=schemas.users.FilterResponse)
 
@@ -97,6 +102,24 @@ class Filter(BaseService):
             nickname__icontains=search,
             join_type=models.Q.OR,
         )
+
+    def format_order(self, order_by: t.List[schemas.users.FilterOrder]) -> t.List[str]:
+        # noinspection PyPep8Naming
+        Order = schemas.users.FilterOrder
+
+        order_map = {
+            Order.CREATED_AT_ASC: "created_at",
+            Order.CREATED_AT_DESC: "-created_at",
+
+            Order.AGE_ASC: "date_of_birth",
+            Order.AGE_DESC: "-date_of_birth",
+
+            Order.COUNTRY_ASC: "country__name_ukr",
+            Order.COUNTRY_DESC: "-country__name_ukr",
+
+            Order.ROLE: "role",
+        }
+        return [order_map[one] for one in order_by]
 
 
 class Create(BaseService):

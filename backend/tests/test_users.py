@@ -1,9 +1,10 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 import pytest
 from dateutil.relativedelta import relativedelta
 
 import models
+import schemas.users
 from conf import settings
 from core import errors
 from tests import factories
@@ -38,6 +39,8 @@ async def test_detail(client):
 
 async def test_filter_empty(client):
     users = factories.UserFactory.create_batch(size=3)
+    users = sorted(users, key=lambda u: u.created_at, reverse=True)
+    users = list(users)
     client.authorize(users[0].id)
 
     resp = await client.get(FILTER_URL)
@@ -50,7 +53,8 @@ async def test_filter_empty(client):
     assert data["page_size"] == settings().DEFAULT_PAGE_SIZE
     assert data["page"] == 1
 
-    assert len(data["results"]) == len(users)
+    user_ids = [one["id"] for one in data["results"]]
+    assert user_ids == [one.id for one in users]
 
 
 @pytest.mark.parametrize(
@@ -164,6 +168,56 @@ async def test_filter_age(query, count, client):
 
     data = resp.json()
     assert len(data["results"]) == count
+
+
+@pytest.mark.parametrize("order_by,python_order,reverse", [
+    (schemas.users.FilterOrder.CREATED_AT_ASC.value, "created_at", False),
+    (schemas.users.FilterOrder.CREATED_AT_DESC.value, "created_at", True),
+
+    (schemas.users.FilterOrder.AGE_ASC.value, "date_of_birth", False),
+    (schemas.users.FilterOrder.AGE_DESC.value, "date_of_birth", True),
+
+    (schemas.users.FilterOrder.ROLE.value, "role", False),
+])
+async def test_filter_order_by(order_by, python_order, reverse: bool, client):
+    user1 = factories.BaseUserFactory(
+        date_of_birth=date.today() - timedelta(days=1)
+    )
+    user2 = factories.AdminUserFactory()
+    user3 = factories.SuperAdminUserFactory(
+        date_of_birth=date.today() - timedelta(days=5),
+        created_at=datetime.now() - timedelta(days=2),
+    )
+
+    client.authorize(user1.id)
+    query = {"order_by": order_by}
+    resp = await client.get(FILTER_URL, params=query)
+    assert resp.status_code == 200
+    data = resp.json()
+
+    user_ids = [one["id"] for one in data["results"]]
+    users = [user1, user2, user3]
+    users.sort(key=lambda u: getattr(u, python_order), reverse=reverse)
+    assert user_ids == [one.id for one in users]
+
+
+@pytest.mark.parametrize("order_by,reverse", [
+    (schemas.users.FilterOrder.COUNTRY_ASC.value, False),
+    (schemas.users.FilterOrder.COUNTRY_DESC.value, True),
+])
+async def test_filter_order_by_country(order_by, reverse: bool, client):
+    users = factories.UserFactory.create_batch(size=3)
+    users = await models.User.filter(id__in=[one.id for one in users]).select_related("country")
+
+    client.authorize(users[0].id)
+    query = {"order_by": order_by}
+    resp = await client.get(FILTER_URL, params=query)
+    assert resp.status_code == 200
+    data = resp.json()
+
+    user_ids = [one["id"] for one in data["results"]]
+    users.sort(key=lambda u: u.country.name_ukr, reverse=reverse)
+    assert user_ids == [one.id for one in users]
 
 
 async def test_create(client):
