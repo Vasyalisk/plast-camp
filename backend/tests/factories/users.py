@@ -28,5 +28,9 @@ class BaseUserFactory(UserFactory):
     role = models.User.Role.BASE
 
 
+class AdminUserFactory(UserFactory):
+    role = models.User.Role.ADMIN
+
+
 class SuperAdminUserFactory(UserFactory):
     role = models.User.Role.SUPER_ADMIN

@@ -25,3 +25,8 @@ async def filter(query: schemas.users.FilterQuery = Depends(), authorize: securi
 @router.post("", response_model=schemas.users.CreateResponse, status_code=201)
 async def create(body: schemas.users.CreateBody, authorize: security.Authorize = Depends()):
     return await services.users.Create().post(body=body, authorize=authorize)
+
+
+@router.delete("/{user_id}", status_code=204)
+async def delete(user_id: int, authorize: security.Authorize = Depends()):
+    return await services.users.Delete().delete(user_id, authorize)

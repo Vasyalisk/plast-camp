@@ -12,6 +12,7 @@ ME_URL = "/users/me"
 DETAIL_URL = "/users/{user_id}"
 FILTER_URL = "/users"
 CREATE_URL = "/users"
+DELETE_URL = "/users/{user_id}"
 
 
 async def test_me(client):
@@ -181,7 +182,7 @@ async def test_create(client):
 
 
 async def test_create_permission_denied(client):
-    user = factories.UserFactory(role=models.User.Role.ADMIN)
+    user = factories.AdminUserFactory()
     client.authorize(user.id)
 
     payload = {"email": "user@test.email"}
@@ -229,3 +230,39 @@ async def test_create_duplicate(client):
     data = resp.json()
 
     assert data["detail"] == errors.DUPLICATE_EMAIL
+
+
+async def test_delete(client):
+    creator = factories.SuperAdminUserFactory()
+    client.authorize(creator.id)
+
+    user = factories.UserFactory()
+    resp = await client.delete(DELETE_URL.format(user_id=user.id))
+    assert resp.status_code == 204
+
+    exists = await models.User.filter(id=user.id).exists()
+    assert not exists
+
+
+async def test_delete_permission_denied(client):
+    creator = factories.AdminUserFactory()
+    client.authorize(creator.id)
+
+    user = factories.UserFactory()
+    resp = await client.delete(DELETE_URL.format(user_id=user.id))
+    assert resp.status_code == 403
+
+    exists = await models.User.filter(id=user.id).exists()
+    assert exists
+
+
+async def test_delete_not_found(client):
+    creator = factories.SuperAdminUserFactory()
+    client.authorize(creator.id)
+
+    user = factories.UserFactory()
+    resp = await client.delete(DELETE_URL.format(user_id=user.id + 1))
+    assert resp.status_code == 404
+
+    exists = await models.User.filter(id=user.id).exists()
+    assert exists

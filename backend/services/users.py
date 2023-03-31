@@ -131,3 +131,17 @@ class Create(BaseService):
     async def validate_permission(self, user: models.User):
         if user.role != models.User.Role.SUPER_ADMIN:
             self.raise_403()
+
+
+class Delete(BaseService):
+    async def delete(self, user_id: int, authorize: security.Authorize) -> None:
+        creator = await authorize.user_or_401()
+
+        if creator.role != models.User.Role.SUPER_ADMIN:
+            self.raise_403()
+
+        user = await models.User.get_or_none(id=user_id)
+        if user is None:
+            self.raise_404()
+
+        await user.delete()
