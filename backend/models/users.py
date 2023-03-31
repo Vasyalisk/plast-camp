@@ -1,5 +1,6 @@
-from tortoise import models, fields
 from enum import Enum
+
+from tortoise import fields, models
 
 
 class User(models.Model):

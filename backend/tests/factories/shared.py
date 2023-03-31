@@ -1,6 +1,7 @@
-from tests.factories.base import TortoiseModelFactory
 import factory
+
 import models
+from tests.factories.base import TortoiseModelFactory
 
 
 class CountryFactory(TortoiseModelFactory):

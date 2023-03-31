@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Security
+
 import db
-from routes import include_routes
-from core import security, redis
 import exceptions
+from core import redis, security
+from routes import include_routes
 
 app = FastAPI(
     redoc_url=None,

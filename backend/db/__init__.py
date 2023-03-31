@@ -1,1 +1,1 @@
-from .utils import connect_db, TORTOISE_CONFIG
+from .utils import TORTOISE_CONFIG, connect_db

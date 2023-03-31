@@ -1,6 +1,7 @@
+import typing as t
+
 import models
 import schemas.pagination
-import typing as t
 
 ResponseModel = t.TypeVar("ResponseModel", bound=schemas.pagination.PaginatedResponse)
 

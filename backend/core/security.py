@@ -1,13 +1,15 @@
+import typing as t
+from enum import Enum
+
+import bcrypt
 from fastapi import FastAPI, HTTPException
+from fastapi.security.api_key import APIKeyHeader
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
-from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel
-from conf import settings
-import bcrypt
-from enum import Enum
-import typing as t
+
 import models
+from conf import settings
 
 
 class JwtConfig(BaseModel):

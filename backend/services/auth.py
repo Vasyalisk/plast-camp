@@ -1,8 +1,8 @@
-import schemas.auth
-import models
 import redis
-from core import redis, security, mail, errors
 
+import models
+import schemas.auth
+from core import errors, mail, redis, security
 from services.base import BaseService
 
 

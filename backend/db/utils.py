@@ -1,6 +1,7 @@
-from tortoise.contrib.fastapi import register_tortoise
-from tortoise import Tortoise
 from fastapi import FastAPI
+from tortoise import Tortoise
+from tortoise.contrib.fastapi import register_tortoise
+
 from conf import settings
 
 TORTOISE_CONFIG = {

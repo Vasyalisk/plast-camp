@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
+
 import schemas.users
-from core import security
 import services.users
+from core import security
 
 router = APIRouter(tags=["users"])
 

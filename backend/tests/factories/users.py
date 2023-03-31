@@ -1,8 +1,9 @@
-import factory
 from datetime import date
 
-from tests.factories.base import TortoiseModelFactory
+import factory
+
 import models
+from tests.factories.base import TortoiseModelFactory
 from tests.factories.shared import CountryFactory
 
 

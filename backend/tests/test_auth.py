@@ -1,10 +1,11 @@
-import pytest
+from datetime import date
 from unittest.mock import patch
 
-from tests import factories
-from datetime import date
+import pytest
+
 import models
-from core import security, redis
+from core import redis, security
+from tests import factories
 
 REGISTER_URL = "/auth/register"
 CONFIRM_REGISTRATION_URL = "/auth/register/confirm"

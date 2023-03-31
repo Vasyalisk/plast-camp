@@ -1,11 +1,12 @@
+from datetime import date, timedelta
+
 import pytest
+from dateutil.relativedelta import relativedelta
 
 import models
-from tests import factories
 from conf import settings
-from datetime import date, timedelta
-from dateutil.relativedelta import relativedelta
 from core import errors
+from tests import factories
 
 ME_URL = "/users/me"
 DETAIL_URL = "/users/{user_id}"

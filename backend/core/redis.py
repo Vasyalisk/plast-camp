@@ -1,11 +1,13 @@
 # See issue with stubs https://github.com/redis/redis-py/issues/2249
 # Plugin location https://www.jetbrains.com/help/pycharm/directories-used-by-the-ide-to-store-settings-caches-plugins-and-logs.html#301b9a53
-from redis import asyncio as aioredis
-from conf import settings
-from enum import Enum
 import secrets
 import typing as t
+from enum import Enum
+
 from fakeredis.aioredis import FakeRedis
+from redis import asyncio as aioredis
+
+from conf import settings
 
 
 class CodeType(str, Enum):

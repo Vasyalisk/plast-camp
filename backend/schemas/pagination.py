@@ -1,6 +1,8 @@
-from pydantic.generics import GenericModel
-from pydantic import BaseModel, conint
 import typing as t
+
+from pydantic import BaseModel, conint
+from pydantic.generics import GenericModel
+
 from conf import settings
 
 ResultType = t.TypeVar("ResultType")

@@ -1,6 +1,7 @@
+import typing as t
+
 from fastapi import HTTPException, Request
 
-import typing as t
 from core import errors
 
 

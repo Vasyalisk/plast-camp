@@ -1,11 +1,13 @@
-from services.base import BaseService
-from services import utils
-import schemas.users
-from core import security, errors
-import models
 import typing as t
-from dateutil.relativedelta import relativedelta
 from datetime import date, timedelta
+
+from dateutil.relativedelta import relativedelta
+
+import models
+import schemas.users
+from core import errors, security
+from services import utils
+from services.base import BaseService
 
 
 class Me(BaseService):

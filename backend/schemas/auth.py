@@ -1,8 +1,9 @@
-from pydantic import BaseModel, EmailStr, validator
 import typing as t
-from schemas.validators import validate_password
-
 from datetime import date
+
+from pydantic import BaseModel, EmailStr, validator
+
+from schemas.validators import validate_password
 
 
 class RegisterBody(BaseModel):

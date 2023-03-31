@@ -1,9 +1,10 @@
-import pydantic
-from datetime import datetime, date
-
 import typing as t
+from datetime import date, datetime
+
+import pydantic
+
 import models
-from schemas.pagination import PaginatedResponse, PaginatedQuery
+from schemas.pagination import PaginatedQuery, PaginatedResponse
 
 
 class CountryResponse(pydantic.BaseModel):

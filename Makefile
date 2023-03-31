@@ -35,3 +35,10 @@ test:
 pip-compile:
 	@docker compose run --rm -u root backend pip-compile --allow-unsafe --generate-hashes --output-file=/requirements/requirements.txt /requirements/requirements.in --resolver=backtracking ${CMD_ARGS}
 	@docker compose run --rm -u root backend chown -R $$(id -u):$$(id -g) /requirements
+
+.PHONY: lint
+lint:
+	@echo "Sorting requirements..."
+	@docker compose run --rm backend python /scripts/sort_requirements.py
+	@echo "Sorting imports..."
+	@docker compose run --rm backend isort /backend --profile black --line-length 120

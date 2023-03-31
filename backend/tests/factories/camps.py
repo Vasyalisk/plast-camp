@@ -1,10 +1,11 @@
-import factory
 from datetime import date
 
+import factory
+
+import models
 from tests.factories.base import TortoiseModelFactory
 from tests.factories.shared import CountryFactory
 from tests.factories.users import UserFactory
-import models
 
 
 class CampFactory(TortoiseModelFactory):

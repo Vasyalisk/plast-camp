@@ -1,10 +1,12 @@
-import pytest
 import asyncio
+
+import pytest
 from httpx import AsyncClient
 from tortoise.contrib.test import finalizer, initializer
-from main import app
+
 from conf import settings
-from core import security, redis
+from core import redis, security
+from main import app
 
 BASE_TEST_CLIENT_URL = "http://test"
 
