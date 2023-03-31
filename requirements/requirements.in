@@ -1,14 +1,13 @@
-aerich
-bcrypt
-factory-boy
-fakeredis
-fakeredis
-fastapi-jwt-auth
-fastapi[all]
-isort
-nest-asyncio
-pip-tools
-pytest
-pytest-asyncio
-redis
-tortoise-orm[asyncpg]==0.18.1
+aerich                         # DB migration tool for Tortoise ORM
+bcrypt                         # Library for password hashing
+factory-boy                    # Test helper for creating model factories
+fakeredis                      # Test helper to mock Redis instance
+fastapi-jwt-auth               # JWT token integration for FastAPI
+fastapi[all]                   # Async server framework
+isort                          # Utility to sort imports
+nest-asyncio                   # Test helper to allow execution of nested async tasks
+pip-tools                      # Utility to generate strict requirements.txt
+pytest                         # Test framework
+pytest-asyncio                 # Async plugin for pytest
+redis                          # Sync/async ORM for Redis
+tortoise-orm[asyncpg]==0.18.1  # Async DB ORM
