@@ -71,17 +71,9 @@ class DetailResponse(pydantic.BaseModel):
     role: str
 
     country: t.Optional[CountryResponse]
-    membership: t.List[MembershipResponse]
 
     class Config:
         orm_mode = True
-
-    @pydantic.validator("membership", pre=True)
-    def validate_related_field(cls, value):
-        if isinstance(value, list):
-            return value
-
-        return list(value)
 
 
 class FilterItemResponse(pydantic.BaseModel):
@@ -91,8 +83,6 @@ class FilterItemResponse(pydantic.BaseModel):
     first_name: str
     last_name: str
     nickname: str
-    date_of_birth: t.Optional[date]
-    role: str
 
     country: t.Optional[CountryResponse]
 

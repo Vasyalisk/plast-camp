@@ -22,11 +22,7 @@ class Detail(BaseService):
         return schemas.users.DetailResponse.from_orm(user)
 
     async def user_or_404(self, user_id: int):
-        user = await models.User.get_or_none(id=user_id).select_related(
-            "country"
-        ).prefetch_related(
-            "membership__camp__country"
-        )
+        user = await models.User.get_or_none(id=user_id).select_related("country")
 
         if user is None:
             self.raise_404()
