@@ -25,3 +25,7 @@ class UserFactory(TortoiseModelFactory):
 
 class BaseUserFactory(UserFactory):
     role = models.User.Role.BASE
+
+
+class SuperAdminUserFactory(UserFactory):
+    role = models.User.Role.SUPER_ADMIN

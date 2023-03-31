@@ -17,6 +17,10 @@ class BaseService:
         raise HTTPException(status_code=401, detail=detail)
 
     @classmethod
+    def raise_403(cls, detail: t.Optional[str] = errors.PERMISSION_DENIED):
+        raise HTTPException(status_code=403, detail=detail)
+
+    @classmethod
     def raise_404(cls, detail: t.Optional[str] = errors.NOT_FOUND):
         raise HTTPException(status_code=404, detail=detail)
 

@@ -114,10 +114,14 @@ class FilterResponse(PaginatedResponse[FilterItemResponse]):
 
 
 class CreateBody(pydantic.BaseModel):
-    email: t.Optional[str] = ""
-    first_name: t.Optional[str] = ""
-    last_name: t.Optional[str] = ""
-    nickname: t.Optional[str] = ""
-    date_of_birth: t.Optional[datetime] = None
-    role: t.Optional[models.User.Role] = None
+    email: str = ""
+    first_name: str = ""
+    last_name: str = ""
+    nickname: str = ""
+    date_of_birth: t.Optional[date] = None
+    role: models.User.Role = models.User.Role.BASE
     country_id: t.Optional[int] = None
+
+
+class CreateResponse(DetailResponse):
+    pass

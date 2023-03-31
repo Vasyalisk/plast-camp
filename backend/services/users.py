@@ -95,3 +95,37 @@ class Filter(BaseService):
             nickname__icontains=search,
             join_type=models.Q.OR,
         )
+
+
+class Create(BaseService):
+    async def post(self, body: schemas.users.CreateBody, authorize: security.Authorize) -> schemas.users.CreateResponse:
+        creator = await authorize.user_or_401()
+        await self.validate_permission(creator)
+
+        if body.email:
+            await self.validate_email(body.email)
+
+        if body.country_id:
+            await self.validate_country_id(body.country_id)
+
+        payload = body.dict()
+        user = await models.User.create(**payload)
+        await user.fetch_related("country")
+
+        return schemas.users.CreateResponse.from_orm(user)
+
+    async def validate_email(self, email: str):
+        exists = await models.User.filter(email=email).exists()
+
+        if exists:
+            self.raise_400(errors.DUPLICATE_EMAIL)
+
+    async def validate_country_id(self, country_id: int):
+        is_valid = await models.Country.filter(id=country_id).exists()
+
+        if not is_valid:
+            self.raise_400(errors.INVALID_COUNTRY_ID)
+
+    async def validate_permission(self, user: models.User):
+        if user.role != models.User.Role.SUPER_ADMIN:
+            self.raise_403()

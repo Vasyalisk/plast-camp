@@ -5,10 +5,12 @@ from tests import factories
 from conf import settings
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
+from core import errors
 
 ME_URL = "/users/me"
 DETAIL_URL = "/users/{user_id}"
 FILTER_URL = "/users"
+CREATE_URL = "/users"
 
 
 async def test_me(client):
@@ -160,3 +162,69 @@ async def test_filter_age(query, count, client):
 
     data = resp.json()
     assert len(data["results"]) == count
+
+
+async def test_create(client):
+    user = factories.SuperAdminUserFactory()
+    client.authorize(user.id)
+
+    payload = {}
+    resp = await client.post(CREATE_URL, json=payload)
+    assert resp.status_code == 201
+
+    data = resp.json()
+    user_id = data["id"]
+    created = await models.User.get_or_none(id=user_id)
+    assert created
+    assert created.role == models.User.Role.BASE
+
+
+async def test_create_permission_denied(client):
+    user = factories.UserFactory(role=models.User.Role.ADMIN)
+    client.authorize(user.id)
+
+    payload = {"email": "user@test.email"}
+    resp = await client.post(CREATE_URL, json=payload)
+    assert resp.status_code == 403
+
+    is_created = await models.User.filter(email=payload["email"]).exists()
+    assert not is_created
+
+
+async def test_create_optional_fields(client):
+    user = factories.SuperAdminUserFactory()
+    country = factories.CountryFactory()
+    client.authorize(user.id)
+
+    payload = {
+        "email": "user@test.email",
+        "first_name": "Bob",
+        "last_name": "Dylan",
+        "nickname": "Singer",
+        "date_of_birth": date.today().isoformat(),
+        "role": models.User.Role.ADMIN,
+        "country_id": country.id,
+    }
+    resp = await client.post(CREATE_URL, json=payload)
+    assert resp.status_code == 201
+    data = resp.json()
+
+    created = await models.User.get_or_none(id=data["id"])
+    assert created
+    assert created.email == payload["email"]
+    assert created.role == payload["role"]
+
+
+async def test_create_duplicate(client):
+    duplicate_email = "user@test.mail"
+
+    factories.UserFactory.create(email=duplicate_email)
+    user = factories.SuperAdminUserFactory()
+    client.authorize(user.id)
+
+    payload = {"email": duplicate_email}
+    resp = await client.post(CREATE_URL, json=payload)
+    assert resp.status_code == 400
+    data = resp.json()
+
+    assert data["detail"] == errors.DUPLICATE_EMAIL

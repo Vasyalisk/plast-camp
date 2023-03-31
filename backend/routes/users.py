@@ -21,7 +21,6 @@ async def filter(query: schemas.users.FilterQuery = Depends(), authorize: securi
     return await services.users.Filter().get(query=query, authorize=authorize)
 
 
-@router.post("", response_model=schemas.users.DetailResponse)
+@router.post("", response_model=schemas.users.CreateResponse, status_code=201)
 async def create(body: schemas.users.CreateBody, authorize: security.Authorize = Depends()):
-    # TODO: implement user create
-    pass
+    return await services.users.Create().post(body=body, authorize=authorize)
