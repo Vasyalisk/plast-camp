@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import typing as t
 from datetime import date, datetime
 from enum import Enum
@@ -6,32 +8,9 @@ import pydantic
 
 import models
 from schemas.pagination import PaginatedQuery, PaginatedResponse
+from schemas.shared import CountryResponse
 
-
-class CountryResponse(pydantic.BaseModel):
-    id: int
-    created_at: datetime
-
-    name_ukr: str
-    name_orig: str
-
-    class Config:
-        orm_mode = True
-
-
-class CampResponse(pydantic.BaseModel):
-    id: int
-    created_at: datetime
-    date_start: t.Optional[date]
-    date_end: t.Optional[date]
-
-    description: str
-    location: str
-    name: str
-    country: t.Optional[CountryResponse]
-
-    class Config:
-        orm_mode = True
+CampResponse = t.ForwardRef("schemas.camps.DetailResponse")
 
 
 class MembershipResponse(pydantic.BaseModel):
