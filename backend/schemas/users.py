@@ -8,13 +8,14 @@ import models
 from schemas.pagination import PaginatedQuery, PaginatedResponse
 from schemas.shared import CountryResponse
 
-CampResponse = t.ForwardRef("schemas.camps.DetailResponse")
+if t.TYPE_CHECKING:
+    from schemas.camps import DetailResponse as CampResponse
 
 
-class MembershipResponse(pydantic.BaseModel):
+class MembershipItemResponse(pydantic.BaseModel):
     created_at: datetime
     role: str
-    camp: CampResponse
+    camp: "CampResponse"
 
     class Config:
         orm_mode = True

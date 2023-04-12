@@ -29,9 +29,15 @@ async def filter(
 ):
     pass
 
+
 @router.get("/my", response_model=schemas.camps.FilterResponse)
 async def my(
         order_by: list[schemas.camps.FilterOrder] = Query(default=[schemas.camps.FilterOrder.NAME_ASC]),
         authorize: security.Authorize = Depends(),
 ):
+    pass
+
+
+@router.get("/{camp_id}/membership", response_model=schemas.camps.MembershipResponse)
+async def membership(query: schemas.camps.MembershipQuery = Depends(), authorize: security.Authorize = Depends()):
     pass

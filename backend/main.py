@@ -4,6 +4,7 @@ import db
 import exceptions
 from core import redis, security
 from routes import include_routes
+from schemas import init_schemas
 
 app = FastAPI(
     redoc_url=None,
@@ -17,6 +18,7 @@ app = FastAPI(
     ]
 )
 
+init_schemas()
 exceptions.add_db_exception_handler(app)
 db.connect_db(app)
 security.configure_jwt(app)

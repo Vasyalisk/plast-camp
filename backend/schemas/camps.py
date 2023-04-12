@@ -7,6 +7,9 @@ import pydantic
 from schemas.pagination import PaginatedQuery, PaginatedResponse
 from schemas.shared import CountryResponse
 
+if t.TYPE_CHECKING:
+    from schemas.users import DetailResponse as UserResponse
+
 
 class DetailResponse(pydantic.BaseModel):
     id: int
@@ -78,4 +81,21 @@ class FilterOrder(str, Enum):
 
 
 class FilterResponse(PaginatedResponse[FilterItemResponse]):
+    pass
+
+
+class MembershipQuery(PaginatedQuery):
+    pass
+
+
+class MembershipItemResponse(pydantic.BaseModel):
+    created_at: datetime
+    role: str
+    user: "UserResponse"
+
+    class Config:
+        orm_mode = True
+
+
+class MembershipResponse(PaginatedResponse[MembershipItemResponse]):
     pass
