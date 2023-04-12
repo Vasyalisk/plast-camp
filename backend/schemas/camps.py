@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import typing as t
 from datetime import date, datetime
 from enum import Enum
@@ -65,7 +63,7 @@ class FilterOrder(str, Enum):
     Enum to use workaround for FastAPI issue with list in query
     https://python.plainenglish.io/how-to-use-the-new-and-cool-annotated-typing-feature-of-fastapi-4a2fdc48ef74
     """
-    
+
     CREATED_AT_ASC = "CREATED_AT_ASC"
     CREATED_AT_DESC = "CREATED_AT_DESC"
 
