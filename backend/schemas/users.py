@@ -12,6 +12,30 @@ if t.TYPE_CHECKING:
     from schemas.camps import DetailResponse as CampResponse
 
 
+class MembershipOrder(str, Enum):
+    """
+    Enum to use workaround for FastAPI issue with list in query
+    https://python.plainenglish.io/how-to-use-the-new-and-cool-annotated-typing-feature-of-fastapi-4a2fdc48ef74
+    """
+    CREATED_AT_ASC = "CREATED_AT_ASC"
+    CREATED_AT_DESC = "CREATED_AT_DESC"
+
+    DATE_START_ASC = "DATE_START_ASC"
+    DATE_START_DESC = "DATE_START_DESC"
+
+    NAME_ASC = "NAME_ASC"
+    NAME_DESC = "NAME_DESC"
+
+    COUNTRY_ASC = "COUNTRY_ASC"
+    COUNTRY_DESC = "COUNTRY_DESC"
+
+    ROLE = "ROLE"
+
+
+class MembershipQuery(PaginatedQuery):
+    pass
+
+
 class MembershipItemResponse(pydantic.BaseModel):
     created_at: datetime
     role: str
@@ -19,6 +43,10 @@ class MembershipItemResponse(pydantic.BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class MembershipResponse(PaginatedResponse[MembershipItemResponse]):
+    pass
 
 
 class MeResponse(pydantic.BaseModel):

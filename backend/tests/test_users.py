@@ -14,6 +14,7 @@ DETAIL_URL = "/users/{user_id}"
 FILTER_URL = "/users"
 CREATE_URL = "/users"
 DELETE_URL = "/users/{user_id}"
+MEMBERSHIP_URL = "/users/{user_id}/membership"
 
 
 async def test_me(client):
@@ -170,54 +171,37 @@ async def test_filter_age(query, count, client):
     assert len(data["results"]) == count
 
 
-@pytest.mark.parametrize("order_by,python_order,reverse", [
-    (schemas.users.FilterOrder.CREATED_AT_ASC.value, "created_at", False),
-    (schemas.users.FilterOrder.CREATED_AT_DESC.value, "created_at", True),
+@pytest.mark.parametrize("order_by,db_order", [
+    (schemas.users.FilterOrder.CREATED_AT_ASC.value, "created_at"),
+    (schemas.users.FilterOrder.CREATED_AT_DESC.value, "-created_at"),
 
-    (schemas.users.FilterOrder.AGE_ASC.value, "date_of_birth", False),
-    (schemas.users.FilterOrder.AGE_DESC.value, "date_of_birth", True),
+    (schemas.users.FilterOrder.AGE_ASC.value, "date_of_birth"),
+    (schemas.users.FilterOrder.AGE_DESC.value, "-date_of_birth"),
 
-    (schemas.users.FilterOrder.ROLE.value, "role", False),
+    (schemas.users.FilterOrder.ROLE.value, "role"),
+
+    (schemas.users.FilterOrder.COUNTRY_ASC.value, "country__name_ukr"),
+    (schemas.users.FilterOrder.COUNTRY_DESC.value, "-country__name_ukr"),
 ])
-async def test_filter_order_by(order_by, python_order, reverse: bool, client):
-    user1 = factories.BaseUserFactory(
+async def test_filter_order_by(order_by, db_order, client):
+    user = factories.BaseUserFactory(
         date_of_birth=date.today() - timedelta(days=1)
     )
-    user2 = factories.AdminUserFactory()
-    user3 = factories.SuperAdminUserFactory(
+    factories.AdminUserFactory()
+    factories.SuperAdminUserFactory(
         date_of_birth=date.today() - timedelta(days=5),
         created_at=datetime.now() - timedelta(days=2),
     )
+    user_ids = await models.User.all().order_by(db_order).values_list("id", flat=True)
 
-    client.authorize(user1.id)
+    client.authorize(user.id)
     query = {"order_by": order_by}
     resp = await client.get(FILTER_URL, params=query)
     assert resp.status_code == 200
+
     data = resp.json()
-
-    user_ids = [one["id"] for one in data["results"]]
-    users = [user1, user2, user3]
-    users.sort(key=lambda u: getattr(u, python_order), reverse=reverse)
-    assert user_ids == [one.id for one in users]
-
-
-@pytest.mark.parametrize("order_by,reverse", [
-    (schemas.users.FilterOrder.COUNTRY_ASC.value, False),
-    (schemas.users.FilterOrder.COUNTRY_DESC.value, True),
-])
-async def test_filter_order_by_country(order_by, reverse: bool, client):
-    users = factories.UserFactory.create_batch(size=3)
-    users = await models.User.filter(id__in=[one.id for one in users]).select_related("country")
-
-    client.authorize(users[0].id)
-    query = {"order_by": order_by}
-    resp = await client.get(FILTER_URL, params=query)
-    assert resp.status_code == 200
-    data = resp.json()
-
-    user_ids = [one["id"] for one in data["results"]]
-    users.sort(key=lambda u: u.country.name_ukr, reverse=reverse)
-    assert user_ids == [one.id for one in users]
+    ids = [one["id"] for one in data["results"]]
+    assert ids == user_ids
 
 
 async def test_create(client):
@@ -320,3 +304,47 @@ async def test_delete_not_found(client):
 
     exists = await models.User.filter(id=user.id).exists()
     assert exists
+
+
+async def test_membership_empty(client):
+    user = factories.UserFactory()
+    client.authorize(user.id)
+
+    resp = await client.get(MEMBERSHIP_URL.format(user_id=user.id))
+    assert resp.status_code == 200
+
+    data = resp.json()
+    assert data["results"] == []
+
+
+@pytest.mark.parametrize("order_by,db_order", [
+    (schemas.users.MembershipOrder.CREATED_AT_ASC.value, "created_at"),
+    (schemas.users.MembershipOrder.CREATED_AT_DESC.value, "-created_at"),
+
+    (schemas.users.MembershipOrder.NAME_ASC.value, "camp__name"),
+    (schemas.users.MembershipOrder.NAME_DESC.value, "-camp__name"),
+
+    (schemas.users.MembershipOrder.DATE_START_ASC.value, "camp__date_start"),
+    (schemas.users.MembershipOrder.DATE_START_DESC.value, "-camp__date_start"),
+
+    (schemas.users.MembershipOrder.COUNTRY_ASC.value, "camp__country__name_ukr"),
+    (schemas.users.MembershipOrder.COUNTRY_DESC.value, "-camp__country__name_ukr"),
+
+    (schemas.users.MembershipOrder.ROLE.value, "role"),
+])
+async def test_membership_order_by(client, order_by, db_order):
+    user = factories.UserFactory()
+    client.authorize(user.id)
+
+    factories.CampMemberFactory.create_batch(user=user, size=3)
+    factories.CampMemberFactory.create_batch(size=2)
+
+    membership_ids = await models.CampMember.filter(user_id=user.id).order_by(db_order).values_list("id", flat=True)
+
+    query = {"order_by": order_by}
+    resp = await client.get(MEMBERSHIP_URL.format(user_id=user.id), params=query)
+    assert resp.status_code == 200
+
+    data = resp.json()
+    ids = [one["camp"]["id"] for one in data["results"]]
+    assert ids == membership_ids

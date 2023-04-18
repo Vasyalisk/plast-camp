@@ -33,6 +33,7 @@ async def filter(
 @router.get("/my", response_model=schemas.camps.FilterResponse)
 async def my(
         order_by: list[schemas.camps.FilterOrder] = Query(default=[schemas.camps.FilterOrder.NAME_ASC]),
+        query: schemas.camps.MembershipQuery = Depends(),
         authorize: security.Authorize = Depends(),
 ):
     pass

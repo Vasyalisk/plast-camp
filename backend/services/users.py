@@ -103,7 +103,7 @@ class Filter(BaseService):
             join_type=models.Q.OR,
         )
 
-    def format_order(self, order_by: t.List[schemas.users.FilterOrder]) -> t.List[str]:
+    def format_order(self, order_by: list[schemas.users.FilterOrder]) -> list[str]:
         # noinspection PyPep8Naming
         Order = schemas.users.FilterOrder
 
@@ -168,3 +168,46 @@ class Delete(BaseService):
             self.raise_404()
 
         await user.delete()
+
+
+class Membership(BaseService):
+    async def get(
+            self,
+            user_id: int,
+            order_by: list[schemas.users.MembershipOrder],
+            query: schemas.users.MembershipQuery,
+            authorize: security.Authorize
+    ) -> schemas.users.MembershipResponse:
+        await authorize.user_or_401()
+
+        user_exists = models.User.exists(id=user_id)
+        if not user_exists:
+            self.raise_404()
+
+        queryset = models.CampMember.filter(user_id=user_id).select_related("camp__country")
+        queryset = queryset.order_by(*self.format_order(order_by))
+
+        return await utils.paginate_response(
+            queryset, request_query=query, response_model=schemas.users.MembershipResponse
+        )
+
+    def format_order(self, order_by: list[schemas.users.MembershipOrder]) -> list[str]:
+        # noinspection PyPep8Naming
+        Order = schemas.users.MembershipOrder
+
+        order_map = {
+            Order.CREATED_AT_ASC: "created_at",
+            Order.CREATED_AT_DESC: "-created_at",
+
+            Order.DATE_START_ASC: "camp__date_start",
+            Order.DATE_START_DESC: "-camp__date_start",
+
+            Order.NAME_ASC: "camp__name",
+            Order.NAME_DESC: "-camp__name",
+
+            Order.COUNTRY_ASC: "camp__country__name_ukr",
+            Order.COUNTRY_DESC: "-camp__country__name_ukr",
+
+            Order.ROLE: "role",
+        }
+        return [order_map[one] for one in order_by]
