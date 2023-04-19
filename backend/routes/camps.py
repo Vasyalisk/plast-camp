@@ -19,7 +19,7 @@ async def create(body: schemas.camps.CreateBody, authorize: security.Authorize =
 
 @router.delete("/{camp_id}", status_code=204)
 async def delete(camp_id: int, authorize: security.Authorize = Depends()):
-    pass
+    return await services.camps.Delete().delete(camp_id=camp_id, authorize=authorize)
 
 
 @router.get("", response_model=schemas.camps.FilterResponse)

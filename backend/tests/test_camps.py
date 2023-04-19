@@ -1,10 +1,13 @@
+from datetime import date, timedelta
+
+import pytest
+
 import models
 from tests import factories
-import pytest
-from datetime import date, timedelta
 
 DETAIL_URL = "/camps/{camp_id}"
 CREATE_URL = "/camps"
+DELETE_URL = "/camps/{camp_id}"
 
 
 @pytest.mark.parametrize("overrides", [
@@ -66,6 +69,7 @@ async def test_create_optionals(client):
     camp = await models.Camp.get_or_none(id=camp_id)
     assert camp
 
+
 async def test_create_permission_denied(client):
     user = factories.UserFactory(role=models.User.Role.BASE)
     client.authorize(user.id)
@@ -75,3 +79,27 @@ async def test_create_permission_denied(client):
     assert resp.status_code == 403
 
 
+async def test_delete(client):
+    user = factories.UserFactory(role=models.User.Role.ADMIN)
+    client.authorize(user.id)
+
+    camp = factories.CampFactory()
+
+    resp = await client.delete(DELETE_URL.format(camp_id=camp.id))
+    assert resp.status_code == 204
+
+    camp_exists = await models.Camp.exists(id=camp.id)
+    assert not camp_exists
+
+
+async def test_delete_permission_denied(client):
+    user = factories.UserFactory(role=models.User.Role.BASE)
+    client.authorize(user.id)
+
+    camp = factories.CampFactory()
+
+    resp = await client.delete(DELETE_URL.format(camp_id=camp.id))
+    assert resp.status_code == 403
+
+    camp_exists = await models.Camp.exists(id=camp.id)
+    assert camp_exists
