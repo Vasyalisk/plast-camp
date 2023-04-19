@@ -34,9 +34,19 @@ class CreateBody(pydantic.BaseModel):
 
     description: str
     location: str
-    name: str
+    name: pydantic.constr(min_length=1)
 
     country_id: t.Optional[int] = None
+
+    @pydantic.validator("date_end")
+    def validate_date_end(cls, value, values):
+        date_start = values.get("date_start")
+
+        if not date_start:
+            return value
+
+        assert value > date_start
+        return value
 
 
 class FilterQuery(PaginatedQuery):
