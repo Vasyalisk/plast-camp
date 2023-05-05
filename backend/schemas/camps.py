@@ -42,10 +42,9 @@ class CreateBody(pydantic.BaseModel):
     def validate_date_end(cls, value, values):
         date_start = values.get("date_start")
 
-        if not date_start:
-            return value
+        if date_start:
+            assert value > date_start
 
-        assert value > date_start
         return value
 
 
@@ -54,6 +53,15 @@ class FilterQuery(PaginatedQuery):
     country_id: t.Optional[int] = None
     date_from: t.Optional[date] = None
     date_till: t.Optional[date] = None
+
+    @pydantic.validator("date_till")
+    def validate_date_till(cls, value, values):
+        date_from = values.get("date_from")
+
+        if date_from:
+            assert value > date_from
+
+        return value
 
 
 class FilterItemResponse(pydantic.BaseModel):

@@ -103,3 +103,7 @@ async def test_delete_permission_denied(client):
 
     camp_exists = await models.Camp.exists(id=camp.id)
     assert camp_exists
+
+async def test_filter():
+    # TODO: test filter API
+    pass
