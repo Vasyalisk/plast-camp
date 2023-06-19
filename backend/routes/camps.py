@@ -28,7 +28,7 @@ async def filter(
         query: schemas.camps.FilterQuery = Depends(),
         authorize: security.Authorize = Depends(),
 ):
-    return await services.camps.Filter().get()
+    return await services.camps.Filter().get(order_by=order_by, query=query, authorize=authorize)
 
 
 @router.get("/my", response_model=schemas.camps.FilterResponse)

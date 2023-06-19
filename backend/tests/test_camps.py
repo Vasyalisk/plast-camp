@@ -3,11 +3,13 @@ from datetime import date, timedelta
 import pytest
 
 import models
+import schemas.camps
 from tests import factories
 
 DETAIL_URL = "/camps/{camp_id}"
 CREATE_URL = "/camps"
 DELETE_URL = "/camps/{camp_id}"
+FILTER_URL = "/camps"
 
 
 @pytest.mark.parametrize("overrides", [
@@ -104,6 +106,55 @@ async def test_delete_permission_denied(client):
     camp_exists = await models.Camp.exists(id=camp.id)
     assert camp_exists
 
+
+async def test_filter_empty(client):
+    user = factories.UserFactory(role=models.User.Role.BASE)
+    client.authorize(user.id)
+
+    camps = factories.CampFactory.create_batch(size=3)
+
+    resp = await client.get(FILTER_URL)
+    assert resp.status_code == 200
+
+    data = resp.json()
+    camp_ids = [one["id"] for one in data["results"]]
+    assert camp_ids == [one.id for one in camps]
+
+
+@pytest.mark.parametrize(
+    "order_by,db_order",
+    [
+        (schemas.camps.FilterOrder.CREATED_AT_ASC.value, "created_at"),
+        (schemas.camps.FilterOrder.CREATED_AT_DESC.value, "-created_at"),
+
+        (schemas.camps.FilterOrder.DATE_START_ASC.value, "date_start"),
+        (schemas.camps.FilterOrder.DATE_START_DESC.value, "-date_start"),
+
+        (schemas.camps.FilterOrder.NAME_ASC.value, "name"),
+        (schemas.camps.FilterOrder.NAME_DESC.value, "-name"),
+
+        (schemas.camps.FilterOrder.COUNTRY_ASC.value, "country__name_ukr"),
+        (schemas.camps.FilterOrder.COUNTRY_DESC.value, "-country__name_ukr"),
+    ],
+)
+async def test_filter_order_by(order_by, db_order, client):
+    user = factories.UserFactory(role=models.User.Role.BASE)
+    client.authorize(user.id)
+
+    # Create with different created_at value
+    factories.CampFactory()
+    factories.CampFactory()
+    factories.CampFactory()
+
+    camp_ids = models.Camp.all().order_by(db_order).values_list("id", flat=True)
+
+    query = {"order_by": order_by}
+    resp = await client.get(FILTER_URL, params=query)
+    assert resp.status_code == 200
+
+    data = resp.json()
+    assert [one["id"] for one in data["results"]] == camp_ids
+
 async def test_filter():
-    # TODO: test filter API
+    # TODO: test filter API by resp of params
     pass
