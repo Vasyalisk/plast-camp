@@ -78,18 +78,30 @@ class EmailPasswordProvider(Provider):
             instance.password = hash_password(instance.password)
 
     async def login(self, request: Request, redis: Redis = Depends(get_redis)):
+        from logging import getLogger
+        logger = getLogger()
+
         form = await request.form()
+        if not form.keys():
+            form = await request.json()
+
         email = form.get("username")
         password = form.get("password")
         remember_me = form.get("remember_me")
         admin = await self.admin_model.get_or_none(email=email)
+        logger.error(password)
+        logger.error(email)
+        logger.error(form)
         if not admin or not check_password(password, admin.password):
+
+
             return templates.TemplateResponse(
                 self.template,
                 status_code=HTTP_401_UNAUTHORIZED,
                 context={"request": request, "error": _("login_failed")},
             )
-        response = RedirectResponse(url=request.app.admin_path, status_code=HTTP_303_SEE_OTHER)
+        # response = RedirectResponse(url=request.app.admin_path, status_code=HTTP_303_SEE_OTHER)
+        response = RedirectResponse(url="http://localhost:3000", status_code=HTTP_303_SEE_OTHER)
         if remember_me == "on":
             expire = 3600 * 24 * 30
             response.set_cookie("remember_me", "on")

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Security
 from admin.app import app as admin_app
 from admin.providers import EmailPasswordProvider
+from starlette.middleware.cors import CORSMiddleware
 
 import db
 import exceptions
@@ -19,6 +20,14 @@ app = FastAPI(
     dependencies=[
         Security(security.AuthorizationHeader)
     ]
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 init_schemas()

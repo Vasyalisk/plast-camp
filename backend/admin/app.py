@@ -32,7 +32,7 @@ class FastAPIAdmin(FastAPI):
             logo_url: str = None,
             default_locale: str = "en_US",
             language_switch: bool = True,
-            admin_path: str = "/admin",
+            admin_path: str = ":3000",
             template_folders: Optional[List[str]] = None,
             providers: Optional[List[Provider]] = None,
             favicon_url: Optional[HttpUrl] = None,
