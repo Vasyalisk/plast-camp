@@ -44,3 +44,7 @@ class User(models.Model):
     country = fields.ForeignKeyField(
         "models.Country", null=True, default=None, on_delete=fields.SET_NULL, related_name="users", description="Край"
     )
+
+    @property
+    def username(self) -> str:
+        return self.email

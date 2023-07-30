@@ -8,6 +8,14 @@ aerich==0.7.0 \
     --hash=sha256:4f53e59686af214b8de15796500eea928c3cf5d2a6dbf7596447e90e41356079 \
     --hash=sha256:6563fb4385eb7fef689f8fe006a4cf866c22f86eda957d48308d1eb645b458a7
     # via -r /requirements/requirements.in
+aiofiles==23.1.0 \
+    --hash=sha256:9312414ae06472eb6f1d163f555e466a23aed1c8f60c30cccf7121dba2e53eb2 \
+    --hash=sha256:edd247df9a19e0db16534d4baaf536d6609a43e1de5401d7a4c1c148753a1635
+    # via fastapi-admin
+aioredis==2.0.1 \
+    --hash=sha256:9ac0d0b3b485d293b8ca1987e6de8658d7dafcca1cddfcd1d506cae8cdebfdd6 \
+    --hash=sha256:eaa51aaf993f2d71f54b70527c440437ba65340588afeb786cd87c55c89cd98e
+    # via fastapi-admin
 aiosqlite==0.17.0 \
     --hash=sha256:6c49dc6d3405929b1d08eeccc72306d3677503cc5e5e43771efc1e00232e8231 \
     --hash=sha256:f0e6acc24bc4864149267ac82fb46dfb3be4455f99fe21df82609cc6e6baee51
@@ -19,6 +27,10 @@ anyio==3.6.2 \
     #   httpcore
     #   starlette
     #   watchfiles
+async-timeout==4.0.2 \
+    --hash=sha256:2163e1640ddb52b7a8c80d0a67a08587e5d245cc9c553a74a847056bc2976b15 \
+    --hash=sha256:8ca1e4fcf50d07413d66d1a5e416e42cfdf5851c981d679a09851a6853383b3c
+    # via aioredis
 asyncpg==0.27.0 \
     --hash=sha256:16ba8ec2e85d586b4a12bcd03e8d29e3d99e832764d6a1d0b8c27dbbe4a2569d \
     --hash=sha256:18f77e8e71e826ba2d0c3ba6764930776719ae2b225ca07e014590545928b576 \
@@ -61,6 +73,10 @@ attrs==22.2.0 \
     --hash=sha256:29e95c7f6778868dbd49170f98f8818f78f3dc5e0e37c0b1f474e3561b240836 \
     --hash=sha256:c9227bfc2f01993c03f68db37d1d15c9690188323c067c641f1a35ca58185f99
     # via pytest
+babel==2.12.1 \
+    --hash=sha256:b4246fb7677d3b98f501a39d43396d3cafdc8eadb045f4a31be01863f655c610 \
+    --hash=sha256:cc2d99999cd01d44420ae725a21c9e3711b3aadc7976d6147f622d8581963455
+    # via fastapi-admin
 bcrypt==4.0.1 \
     --hash=sha256:089098effa1bc35dc055366740a067a2fc76987e8ec75349eb9484061c54f535 \
     --hash=sha256:08d2947c490093a11416df18043c27abe3921558d2c03e2076ccb28a116cb6d0 \
@@ -83,7 +99,9 @@ bcrypt==4.0.1 \
     --hash=sha256:cbb03eec97496166b704ed663a53680ab57c5084b2fc98ef23291987b525cb7d \
     --hash=sha256:e9a51bbfe7e9802b5f3508687758b564069ba937748ad7b9e890086290d2f79e \
     --hash=sha256:fbdaec13c5105f0c4e5c52614d04f0bca5f5af007910daa8b6b12095edaa67b3
-    # via -r /requirements/requirements.in
+    # via
+    #   -r /requirements/requirements.in
+    #   fastapi-admin
 build==0.10.0 \
     --hash=sha256:af266720050a66c893a6096a2f410989eeac74ff9a68ba194b3f6473e8e26171 \
     --hash=sha256:d5b71264afdb5951d6704482aac78de887c80691c52b88a9ad195983ca2c9269
@@ -113,6 +131,10 @@ email-validator==1.3.1 \
     --hash=sha256:49a72f5fa6ed26be1c964f0567d931d10bf3fdeeacdf97bc26ef1cd2a44e0bda \
     --hash=sha256:d178c5c6fa6c6824e9b04f199cf23e79ac15756786573c190d2ad13089411ad2
     # via fastapi
+execnet==2.0.2 \
+    --hash=sha256:88256416ae766bc9e8895c76a87928c0012183da3cc4fc18016e6f050e025f41 \
+    --hash=sha256:cc59bc4423742fd71ad227122eb0dd44db51efb3dc4095b45ac9a08c770096af
+    # via pytest-xdist
 factory-boy==3.2.1 \
     --hash=sha256:a98d277b0c047c75eb6e4ab8508a7f81fb03d2cb21986f627913546ef7a2a55e \
     --hash=sha256:eb02a7dd1b577ef606b75a253b9818e6f9eaf996d94449c9d5ebb124f90dc795
@@ -130,7 +152,12 @@ fastapi[all]==0.95.0 \
     --hash=sha256:daf73bbe844180200be7966f68e8ec9fd8be57079dff1bacb366db32729e6eb5
     # via
     #   -r /requirements/requirements.in
+    #   fastapi-admin
     #   fastapi-jwt-auth
+fastapi-admin==1.0.4 \
+    --hash=sha256:0b00dd2d72bbb5af50847cd4c49261aab999eeba7d8371786b822dce4b97ef0d \
+    --hash=sha256:d45cb23a23fc2bbffb0e8adfb1362350a1fe808f47912253c1f067f7d7745d88
+    # via -r /requirements/requirements.in
 fastapi-jwt-auth==0.5.0 \
     --hash=sha256:43110a227e36f93b99257a1c79e66df8ed3d4c893291db8f9db2686192011f17 \
     --hash=sha256:d98068a9e828fe5909a1f338efabc3bb53149f11a9d2d395ab9d90fbb486b375
@@ -218,7 +245,9 @@ itsdangerous==2.1.2 \
 jinja2==3.1.2 \
     --hash=sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852 \
     --hash=sha256:6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61
-    # via fastapi
+    # via
+    #   fastapi
+    #   fastapi-admin
 markupsafe==2.1.2 \
     --hash=sha256:0576fe974b40a400449768941d5d0858cc624e3249dfd1e0c33674e5c7ca7aed \
     --hash=sha256:085fd3201e7b12809f9e6e9bc1e5c96a368c8523fad5afb02afe3c051ae4afcc \
@@ -332,6 +361,29 @@ packaging==23.0 \
     # via
     #   build
     #   pytest
+pendulum==2.1.2 \
+    --hash=sha256:0731f0c661a3cb779d398803655494893c9f581f6488048b3fb629c2342b5394 \
+    --hash=sha256:1245cd0075a3c6d889f581f6325dd8404aca5884dea7223a5566c38aab94642b \
+    --hash=sha256:29c40a6f2942376185728c9a0347d7c0f07905638c83007e1d262781f1e6953a \
+    --hash=sha256:2d1619a721df661e506eff8db8614016f0720ac171fe80dda1333ee44e684087 \
+    --hash=sha256:318f72f62e8e23cd6660dbafe1e346950281a9aed144b5c596b2ddabc1d19739 \
+    --hash=sha256:33fb61601083f3eb1d15edeb45274f73c63b3c44a8524703dc143f4212bf3269 \
+    --hash=sha256:3481fad1dc3f6f6738bd575a951d3c15d4b4ce7c82dce37cf8ac1483fde6e8b0 \
+    --hash=sha256:4c9c689747f39d0d02a9f94fcee737b34a5773803a64a5fdb046ee9cac7442c5 \
+    --hash=sha256:7c5ec650cb4bec4c63a89a0242cc8c3cebcec92fcfe937c417ba18277d8560be \
+    --hash=sha256:94b1fc947bfe38579b28e1cccb36f7e28a15e841f30384b5ad6c5e31055c85d7 \
+    --hash=sha256:9702069c694306297ed362ce7e3c1ef8404ac8ede39f9b28b7c1a7ad8c3959e3 \
+    --hash=sha256:b06a0ca1bfe41c990bbf0c029f0b6501a7f2ec4e38bfec730712015e8860f207 \
+    --hash=sha256:b6c352f4bd32dff1ea7066bd31ad0f71f8d8100b9ff709fb343f3b86cee43efe \
+    --hash=sha256:c501749fdd3d6f9e726086bf0cd4437281ed47e7bca132ddb522f86a1645d360 \
+    --hash=sha256:c807a578a532eeb226150d5006f156632df2cc8c5693d778324b43ff8c515dd0 \
+    --hash=sha256:db0a40d8bcd27b4fb46676e8eb3c732c67a5a5e6bfab8927028224fbced0b40b \
+    --hash=sha256:de42ea3e2943171a9e95141f2eecf972480636e8e484ccffaf1e833929e9e052 \
+    --hash=sha256:e95d329384717c7bf627bf27e204bc3b15c8238fa8d9d9781d93712776c14002 \
+    --hash=sha256:f5e236e7730cab1644e1b87aca3d2ff3e375a608542e90fe25685dae46310116 \
+    --hash=sha256:f888f2d2909a414680a29ae74d0592758f2b9fcdee3549887779cd4055e975db \
+    --hash=sha256:fb53ffa0085002ddd43b6ca61a7b34f2d4d7c3ed66f931fe599e1a531b42af9b
+    # via fastapi-admin
 pip-tools==6.12.3 \
     --hash=sha256:480d44fae6e09fad3f9bd3d0a7e8423088715d10477e8ef0663440db25e3114f \
     --hash=sha256:8510420f46572b2e26c357541390593d9365eb6edd2d1e7505267910ecaec080
@@ -398,14 +450,21 @@ pytest==7.2.2 \
     # via
     #   -r /requirements/requirements.in
     #   pytest-asyncio
+    #   pytest-xdist
 pytest-asyncio==0.21.0 \
     --hash=sha256:2b38a496aef56f56b0e87557ec313e11e1ab9276fc3863f6a7be0f1d0e415e1b \
     --hash=sha256:f2b3366b7cd501a4056858bd39349d5af19742aed2d81660b7998b6341c7eb9c
     # via -r /requirements/requirements.in
+pytest-xdist==3.3.1 \
+    --hash=sha256:d5ee0520eb1b7bcca50a60a518ab7a7707992812c578198f8b44fdfac78e8c93 \
+    --hash=sha256:ff9daa7793569e6a68544850fd3927cd257cc03a7ef76c95e86915355e82b5f2
+    # via -r /requirements/requirements.in
 python-dateutil==2.8.2 \
     --hash=sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86 \
     --hash=sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9
-    # via faker
+    # via
+    #   faker
+    #   pendulum
 python-dotenv==1.0.0 \
     --hash=sha256:a8df96034aae6d2d50a4ebe8216326c61c3eb64836776504fcca410e5937a3ba \
     --hash=sha256:f5971a9226b701070a4bf2c38c89e5a3f0d64de8debda981d1db98583009122a
@@ -413,11 +472,17 @@ python-dotenv==1.0.0 \
 python-multipart==0.0.6 \
     --hash=sha256:e9925a80bb668529f1b67c7fdb0a5dacdd7cbfc6fb0bff3ea443fe22bdd62132 \
     --hash=sha256:ee698bab5ef148b0a760751c261902cd096e57e10558e11aca17646b74ee1c18
-    # via fastapi
+    # via
+    #   fastapi
+    #   fastapi-admin
 pytz==2022.7.1 \
     --hash=sha256:01a0681c4b9684a28304615eba55d1ab31ae00bf68ec157ec3708a8182dbbcd0 \
     --hash=sha256:78f4f37d8198e0627c5f1143240bb0206b8691d8d7ac6d78fee88b78733f8c4a
     # via tortoise-orm
+pytzdata==2020.1 \
+    --hash=sha256:3efa13b335a00a8de1d345ae41ec78dd11c9f8807f522d39850f2dd828681540 \
+    --hash=sha256:e1e14750bcf95016381e4d472bad004eef710f2d6417240904070b3d6654485f
+    # via pendulum
 pyyaml==6.0 \
     --hash=sha256:01b45c0191e6d66c470b6cf1b9531a771a83c1c4208272ead47a3ae4f2f603bf \
     --hash=sha256:0283c35a6a9fbf047493e3a0ce8d79ef5030852c51e9d911a27badfde0605293 \
@@ -501,10 +566,12 @@ tortoise-orm[asyncpg]==0.18.1 \
     # via
     #   -r /requirements/requirements.in
     #   aerich
+    #   fastapi-admin
 typing-extensions==4.5.0 \
     --hash=sha256:5cb5f4a79139d699607b3ef622a1dedafa84e115ab0024e0d9c044a9479ca7cb \
     --hash=sha256:fb33085c39dd998ac16d1431ebc293a8b3eedd00fd4a32de0ff79002c19511b4
     # via
+    #   aioredis
     #   aiosqlite
     #   pydantic
 ujson==5.7.0 \
@@ -577,7 +644,9 @@ ujson==5.7.0 \
 uvicorn[standard]==0.21.1 \
     --hash=sha256:0fac9cb342ba099e0d582966005f3fdba5b0290579fed4a6266dc702ca7bb032 \
     --hash=sha256:e47cac98a6da10cd41e6fd036d472c6f58ede6c5dbee3dbee3ef7a100ed97742
-    # via fastapi
+    # via
+    #   fastapi
+    #   fastapi-admin
 uvloop==0.17.0 \
     --hash=sha256:0949caf774b9fcefc7c5756bacbbbd3fc4c05a6b7eebc7c7ad6f825b23998d6d \
     --hash=sha256:0ddf6baf9cf11a1a22c71487f39f15b2cf78eb5bde7e5b45fbb99e8a9d91b9e1 \

@@ -1,0 +1,8 @@
+FROM node:16
+
+RUN mkdir /admin_fe
+RUN git clone https://github.com/long2ice/restful-admin.git /admin_fe
+WORKDIR /admin_fe
+RUN yarn && yarn build
+
+CMD yarn serve

@@ -30,8 +30,7 @@ async def test_register(redis_code_mock, client, redis_cleanup):
     assert data["access_token"]
     assert data["refresh_token"]
 
-    user = await models.User.get_or_none(email=payload["email"])
-    assert user
+    user = await models.User.get(email=payload["email"])
     assert user.password != payload["password"]  # type: ignore
 
     redis_user_id = await redis.check_code(MOCKED_USER_CODE, redis.CodeType.REGISTER)
@@ -65,7 +64,7 @@ async def test_register_update_password(client, redis_cleanup):
     assert resp.status_code == 201
 
     await user.refresh_from_db()
-    assert user
+    assert user.password is not None
 
 
 async def test_register_optional_fields(client, redis_cleanup):

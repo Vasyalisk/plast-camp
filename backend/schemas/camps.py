@@ -58,7 +58,7 @@ class FilterQuery(PaginatedQuery):
     def validate_date_till(cls, value, values):
         date_from = values.get("date_from")
 
-        if date_from:
+        if value and date_from:
             assert value > date_from
 
         return value

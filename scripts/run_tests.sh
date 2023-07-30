@@ -8,4 +8,4 @@ export REDIS_DB=10
 # fakeredis issue with authed connections
 export REDIS_PASSWORD=
 
-pytest ${PYTEST_OPTS} -vv
+pytest ${PYTEST_OPTS} -vv -n auto

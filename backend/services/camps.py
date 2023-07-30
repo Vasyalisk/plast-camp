@@ -89,7 +89,7 @@ class Filter(BaseService):
             self.raise_400(errors.INVALID_COUNTRY_ID)
 
     def format_search_filter(self, search: str) -> models.Q:
-        return models.Q(location__icontains=search, name__icontains=search)
+        return models.Q(location__icontains=search, name__icontains=search, join_type=models.Q.OR)
 
     def format_date_range_filter(self, date_from: t.Optional[date], date_till: t.Optional[date]) -> models.Q:
         date_from = date_from or date.min
@@ -101,9 +101,9 @@ class Filter(BaseService):
         # Whether date_end is within range [date_from, date_till]
         date_end_overlaps = models.Q(date_end__gte=date_from, date_end__lte=date_till)
 
-        # Whether [date_from, date_till] is a sub-range of [date_start, date_end]
+        # Whether [date_start, date_end] is a sub-range of [date_from, date_till]
         date_range_overlaps = models.Q(date_start__lte=date_from, date_end__gte=date_till, join_type=models.Q.AND)
-        return models.Q(date_start_overlaps, date_end_overlaps, date_range_overlaps)
+        return models.Q(date_start_overlaps, date_end_overlaps, date_range_overlaps, join_type=models.Q.OR)
 
     def format_order(self, order_by: list[schemas.camps.FilterOrder]) -> list[str]:
         # noinspection PyPep8Naming

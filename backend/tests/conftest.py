@@ -50,6 +50,6 @@ async def redis_cleanup(event_loop):
 
 
 @pytest.fixture()
-async def client(db, event_loop):
+async def client(db, event_loop) -> TestClient:
     async with TestClient(app=app, base_url=BASE_TEST_CLIENT_URL) as client:
         yield client
