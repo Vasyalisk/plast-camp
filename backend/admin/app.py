@@ -1,19 +1,16 @@
 from typing import Dict, List, Optional, Type
 
-from redis.asyncio import Redis
 from fastapi import FastAPI
-from pydantic import HttpUrl
-from starlette.middleware.base import BaseHTTPMiddleware
-from tortoise import Model
-
-from fastapi_admin import i18n
-
-from fastapi_admin import middlewares, template
+from fastapi_admin import i18n, template
 from fastapi_admin.providers import Provider
 from fastapi_admin.resources import Dropdown
 from fastapi_admin.resources import Model as ModelResource
 from fastapi_admin.resources import Resource
-from fastapi_admin.routes import router
+from pydantic import HttpUrl
+from redis.asyncio import Redis
+from tortoise import Model
+
+from admin.routes import router
 
 
 class FastAPIAdmin(FastAPI):
@@ -32,7 +29,7 @@ class FastAPIAdmin(FastAPI):
             logo_url: str = None,
             default_locale: str = "en_US",
             language_switch: bool = True,
-            admin_path: str = ":3000",
+            admin_path: str = "/admin",
             template_folders: Optional[List[str]] = None,
             providers: Optional[List[Provider]] = None,
             favicon_url: Optional[HttpUrl] = None,
@@ -75,5 +72,4 @@ app = FastAPIAdmin(
     title="FastAdmin",
     description="A fast admin dashboard based on fastapi and tortoise-orm with tabler ui.",
 )
-app.add_middleware(BaseHTTPMiddleware, dispatch=middlewares.language_processor)
 app.include_router(router)

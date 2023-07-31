@@ -1,14 +1,14 @@
 from fastapi import FastAPI, Security
-from admin.app import app as admin_app
-from admin.providers import EmailPasswordProvider
 from starlette.middleware.cors import CORSMiddleware
 
 import db
 import exceptions
+import models
+from admin.app import app as admin_app
+from admin.providers import EmailPasswordProvider
 from core import redis, security
 from routes import include_routes
 from schemas import init_schemas
-import models
 
 app = FastAPI(
     redoc_url=None,
@@ -36,19 +36,13 @@ db.connect_db(app)
 security.configure_jwt(app)
 include_routes(app)
 
-login_provider = EmailPasswordProvider(
-    admin_model=models.User,  # type: ignore
-    login_logo_url="https://preview.tabler.io/static/logo.svg"
-)
-
+login_provider = EmailPasswordProvider(admin_model=models.User)  # type: ignore
 app.mount("/admin", admin_app, name="admin")
 
 
 @app.on_event("startup")
 async def on_startup():
     await admin_app.configure(
-        logo_url="https://preview.tabler.io/static/logo-white.svg",
-        # template_folders=[os.path.join(BASE_DIR, "templates")],
         providers=[login_provider],
         redis=redis.connection,
     )

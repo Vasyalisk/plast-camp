@@ -2,21 +2,21 @@ import typing
 import uuid
 from typing import Type
 
-from redis.asyncio import Redis
 from fastapi import Depends, Form
+from fastapi_admin import constants
+from fastapi_admin.depends import get_current_admin, get_redis, get_resources
+from fastapi_admin.i18n import _
+from fastapi_admin.providers import Provider
+from fastapi_admin.template import templates
+from redis.asyncio import Redis
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 from starlette.status import HTTP_303_SEE_OTHER, HTTP_401_UNAUTHORIZED
 from tortoise import signals
 
-from fastapi_admin import constants
-from fastapi_admin.depends import get_current_admin, get_redis, get_resources
-from fastapi_admin.i18n import _
 from admin.models import AbstractEmailAdmin
-from fastapi_admin.providers import Provider
-from fastapi_admin.template import templates
-from fastapi_admin.utils import check_password, hash_password
+from core import security
 
 if typing.TYPE_CHECKING:
     from fastapi_admin.app import FastAPIAdmin
@@ -73,9 +73,9 @@ class EmailPasswordProvider(Provider):
         if instance.pk:
             db_obj = await instance.get(pk=instance.pk)
             if db_obj.password != instance.password:
-                instance.password = hash_password(instance.password)
+                instance.password = security.hash_password(instance.password)
         else:
-            instance.password = hash_password(instance.password)
+            instance.password = security.hash_password(instance.password)
 
     async def login(self, request: Request, redis: Redis = Depends(get_redis)):
         from logging import getLogger
@@ -92,16 +92,13 @@ class EmailPasswordProvider(Provider):
         logger.error(password)
         logger.error(email)
         logger.error(form)
-        if not admin or not check_password(password, admin.password):
-
-
+        if not admin or not security.verify_password(password, admin.password):
             return templates.TemplateResponse(
                 self.template,
                 status_code=HTTP_401_UNAUTHORIZED,
                 context={"request": request, "error": _("login_failed")},
             )
-        # response = RedirectResponse(url=request.app.admin_path, status_code=HTTP_303_SEE_OTHER)
-        response = RedirectResponse(url="http://localhost:3000", status_code=HTTP_303_SEE_OTHER)
+        response = RedirectResponse(url=request.app.admin_path, status_code=HTTP_303_SEE_OTHER)
         if remember_me == "on":
             expire = 3600 * 24 * 30
             response.set_cookie("remember_me", "on")
@@ -204,7 +201,7 @@ class EmailPasswordProvider(Provider):
             resources=Depends(get_resources),
     ):
         error = None
-        if not check_password(old_password, admin.password):
+        if not security.verify_password(old_password, admin.password):
             error = _("old_password_error")
         elif new_password != re_new_password:
             error = _("new_password_different")
