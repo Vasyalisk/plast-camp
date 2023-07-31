@@ -3,9 +3,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 import db
 import exceptions
-import models
-from admin.app import app as admin_app
-from admin.providers import EmailPasswordProvider
+from admin.app import admin_app
 from core import redis, security
 from routes import include_routes
 from schemas import init_schemas
@@ -35,17 +33,12 @@ exceptions.add_db_exception_handler(app)
 db.connect_db(app)
 security.configure_jwt(app)
 include_routes(app)
-
-login_provider = EmailPasswordProvider(admin_model=models.User)  # type: ignore
 app.mount("/admin", admin_app, name="admin")
 
 
 @app.on_event("startup")
 async def on_startup():
-    await admin_app.configure(
-        providers=[login_provider],
-        redis=redis.connection,
-    )
+    await admin_app.configure()
 
 
 @app.on_event("shutdown")

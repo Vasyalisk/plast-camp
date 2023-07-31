@@ -1,8 +1,7 @@
 from typing import Dict, List, Optional, Type
 
 from fastapi import FastAPI
-from fastapi_admin import i18n, template
-from fastapi_admin.providers import Provider
+from fastapi_admin import i18n
 from fastapi_admin.resources import Dropdown
 from fastapi_admin.resources import Model as ModelResource
 from fastapi_admin.resources import Resource
@@ -10,7 +9,10 @@ from pydantic import HttpUrl
 from redis.asyncio import Redis
 from tortoise import Model
 
+import models
+from admin import providers
 from admin.routes import router
+from core import redis
 
 
 class FastAPIAdmin(FastAPI):
@@ -23,30 +25,18 @@ class FastAPIAdmin(FastAPI):
     language_switch: bool = True
     favicon_url: Optional[HttpUrl] = None
 
-    async def configure(
-            self,
-            redis: Redis,
-            logo_url: str = None,
-            default_locale: str = "en_US",
-            language_switch: bool = True,
-            admin_path: str = "/admin",
-            template_folders: Optional[List[str]] = None,
-            providers: Optional[List[Provider]] = None,
-            favicon_url: Optional[HttpUrl] = None,
-    ):
-        self.redis = redis
-        i18n.set_locale(default_locale)
-        self.admin_path = admin_path
-        self.language_switch = language_switch
-        self.logo_url = logo_url
-        self.favicon_url = favicon_url
-        if template_folders:
-            template.add_template_folder(*template_folders)
-        await self._register_providers(providers)
+    async def configure(self):
+        self.redis = redis.connection
+        i18n.set_locale("en_US")
+        self.admin_path = "/admin"
+        self.language_switch = False
+        self.logo_url = None  # type: ignore
+        self.favicon_url = None
 
-    async def _register_providers(self, providers: Optional[List[Provider]] = None):
-        for p in providers or []:
-            await p.register(self)
+        login_provider = providers.EmailPasswordProvider(admin_model=models.User)  # type: ignore
+        await login_provider.register(self)
+
+        import admin.resources
 
     def register_resources(self, *resource: Type[Resource]):
         for r in resource:
@@ -68,8 +58,8 @@ class FastAPIAdmin(FastAPI):
         return r() if r else None
 
 
-app = FastAPIAdmin(
+admin_app = FastAPIAdmin(
     title="FastAdmin",
     description="A fast admin dashboard based on fastapi and tortoise-orm with tabler ui.",
 )
-app.include_router(router)
+admin_app.include_router(router)

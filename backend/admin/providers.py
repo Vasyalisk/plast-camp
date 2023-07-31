@@ -78,9 +78,6 @@ class EmailPasswordProvider(Provider):
             instance.password = security.hash_password(instance.password)
 
     async def login(self, request: Request, redis: Redis = Depends(get_redis)):
-        from logging import getLogger
-        logger = getLogger()
-
         form = await request.form()
         if not form.keys():
             form = await request.json()
@@ -89,9 +86,6 @@ class EmailPasswordProvider(Provider):
         password = form.get("password")
         remember_me = form.get("remember_me")
         admin = await self.admin_model.get_or_none(email=email)
-        logger.error(password)
-        logger.error(email)
-        logger.error(form)
         if not admin or not security.verify_password(password, admin.password):
             return templates.TemplateResponse(
                 self.template,
