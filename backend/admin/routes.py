@@ -1,10 +1,10 @@
 from fastapi import Depends, Request
-from fastapi_admin.depends import get_resources
+from fastapi_admin.depends import get_resources, get_current_admin
 from fastapi_admin.routes import router
 from fastapi_admin.template import templates
 
 
-@router.get("/")
+@router.get("/", dependencies=[Depends(get_current_admin)])
 async def home(
         request: Request,
         resources=Depends(get_resources),

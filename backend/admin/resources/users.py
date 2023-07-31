@@ -1,28 +1,37 @@
 from fastapi_admin import resources
-from fastapi_admin.widgets import displays, filters, inputs
+from fastapi_admin.widgets import displays, inputs
+from admin.resources.utils import setup_read_only_fields
 
 import models
 from admin.app import admin_app
 
 
 @admin_app.register
+@setup_read_only_fields(
+    "id",
+    "created_at",
+)
 class UserAdmin(resources.Model):
     label = "Users"
     model = models.User
     fields = (
         "id",
-        resources.Field(
-            name="password",
-            label="Password",
-            display=displays.InputOnly(),
-            input_=inputs.Password(),
-        ),
+        "created_at",
         resources.Field(
             name="email",
-            label="Email",
             input_=inputs.Email(),
         ),
         "is_email_verified",
+        resources.Field(
+            name="password",
+            display=displays.InputOnly(),
+            input_=inputs.Password(),
+        ),
+
         "first_name",
         "last_name",
+        "nickname",
+        "date_of_birth",
+        "role",
+        "country",
     )

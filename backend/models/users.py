@@ -34,9 +34,9 @@ class User(models.Model):
     is_email_verified = fields.BooleanField(default=False, description="Чи дійсний емейл?")
     password = fields.CharField(max_length=255, null=True, default=None, description="Хешований пароль")
 
-    first_name = fields.CharField(max_length=127, description="Ім'я")
-    last_name = fields.CharField(max_length=127, description="Прізвище")
-    nickname = fields.CharField(max_length=127, description="Псевдо")
+    first_name = fields.CharField(max_length=127, description="Ім'я", default="")
+    last_name = fields.CharField(max_length=127, description="Прізвище", default="")
+    nickname = fields.CharField(max_length=127, description="Псевдо", default="")
     date_of_birth = fields.DateField(null=True, description="Дата народження")
 
     role = fields.CharEnumField(Role, max_length=64, default=Role.BASE, description="Роль користувача")
