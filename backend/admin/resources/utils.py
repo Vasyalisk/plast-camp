@@ -1,6 +1,7 @@
-from fastapi_admin.resources import Field, Model
-from fastapi_admin.widgets import inputs, displays
 import typing as t
+
+from fastapi_admin.resources import Field, Model
+from fastapi_admin.widgets import displays, inputs
 
 
 def setup_read_only_fields(*field_names: str):

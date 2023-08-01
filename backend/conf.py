@@ -36,6 +36,8 @@ class Settings(BaseSettings):
     DEFAULT_PAGE_SIZE: t.Optional[int] = 20
     MAX_PAGE_SIZE: t.Optional[int] = 50
 
+    LOG_LEVEL: str = "INFO"
+
     class Config:
         case_sensitive = True
 

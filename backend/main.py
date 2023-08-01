@@ -1,13 +1,17 @@
+import logging
+
 from fastapi import FastAPI, Security
 from starlette.middleware.cors import CORSMiddleware
 
 import db
 import exceptions
 from admin.app import admin_app
+from conf import settings
 from core import redis, security
 from routes import include_routes
 from schemas import init_schemas
 
+logging.basicConfig(level=settings().LOG_LEVEL)
 app = FastAPI(
     redoc_url=None,
     swagger_ui_parameters={

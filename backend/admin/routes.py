@@ -1,5 +1,5 @@
 from fastapi import Depends, Request
-from fastapi_admin.depends import get_resources, get_current_admin
+from fastapi_admin.depends import get_current_admin, get_resources
 from fastapi_admin.routes import router
 from fastapi_admin.template import templates
 

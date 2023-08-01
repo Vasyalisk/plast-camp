@@ -1,9 +1,9 @@
 from fastapi_admin import resources
 from fastapi_admin.widgets import displays, inputs
-from admin.resources.utils import setup_read_only_fields
 
 import models
 from admin.app import admin_app
+from admin.resources.utils import setup_read_only_fields
 
 
 @admin_app.register

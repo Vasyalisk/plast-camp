@@ -12,18 +12,18 @@ def main():
 def sort_file(file_name):
     with open(file_name, "r") as f:
         lines = f.readlines()
-        lines = (one for one in lines if one.strip())
 
+    lines = (one for one in lines if one.strip())
     spec_lines = []
     req_lines = []
     for line in lines:
+        if not line.endswith("\n"):
+            line += "\n"
+
         if line[0].isalpha():
             req_lines.append(line)
         else:
             spec_lines.append(line)
-
-    if spec_lines:
-        spec_lines.append("\n")
 
     lines = [*spec_lines, *sorted(req_lines)]
     with open(file_name, "w+") as f:
