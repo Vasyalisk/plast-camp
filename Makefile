@@ -6,6 +6,10 @@ init-db:
 migrate:
 	@docker compose run --rm backend aerich migrate ${CMD_ARGS}
 
+.PHONY: upgrade-zero
+upgrade-zero:
+	@docker compose run --rm backend python -c 'from migrations import utils; utils.command.upgrade_zero_sync()'
+
 .PHONY: upgrade
 upgrade:
 	@docker compose run --rm backend aerich upgrade ${CMD_ARGS}

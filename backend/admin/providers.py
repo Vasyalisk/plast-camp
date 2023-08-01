@@ -135,8 +135,12 @@ class EmailPasswordProvider(Provider):
         if path == self.login_path and admin:
             return RedirectResponse(url=request.app.admin_path, status_code=HTTP_303_SEE_OTHER)
 
+        if path not in (self.login_path, "/init") and admin is None:
+            return self.redirect_login(request)
+
         response = await call_next(request)
         return response
+
 
     async def create_user(self, username: str, password: str, **kwargs):
         return await self.admin_model.create(email=username, password=password, **kwargs)

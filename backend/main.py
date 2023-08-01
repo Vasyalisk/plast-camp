@@ -1,7 +1,9 @@
 import logging
+import os
 
 from fastapi import FastAPI, Security
 from starlette.middleware.cors import CORSMiddleware
+from starlette.staticfiles import StaticFiles
 
 import db
 import exceptions
@@ -11,6 +13,7 @@ from core import redis, security
 from routes import include_routes
 from schemas import init_schemas
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 logging.basicConfig(level=settings().LOG_LEVEL)
 app = FastAPI(
     redoc_url=None,
@@ -38,6 +41,7 @@ db.connect_db(app)
 security.configure_jwt(app)
 include_routes(app)
 app.mount("/admin", admin_app, name="admin")
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
 
 @app.on_event("startup")
