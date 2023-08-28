@@ -7,7 +7,6 @@ from starlette.staticfiles import StaticFiles
 
 import db
 import exceptions
-from admin.app import admin_app
 from conf import settings
 from core import redis, security
 from routes import include_routes
@@ -40,13 +39,7 @@ exceptions.add_db_exception_handler(app)
 db.connect_db(app)
 security.configure_jwt(app)
 include_routes(app)
-app.mount("/admin", admin_app, name="admin")
 app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
-
-
-@app.on_event("startup")
-async def on_startup():
-    await admin_app.configure()
 
 
 @app.on_event("shutdown")

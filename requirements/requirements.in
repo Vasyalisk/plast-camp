@@ -2,7 +2,7 @@ aerich                         # DB migration tool for Tortoise ORM
 bcrypt                         # Library for password hashing
 factory-boy                    # Test helper for creating model factories
 fakeredis                      # Test helper to mock Redis instance
-fastapi-admin                  # Admin panel for FastAPI
+starlette-admin                # Admin panel for FastAPI / Starlette
 fastapi-jwt-auth               # JWT token integration for FastAPI
 fastapi[all]                   # Async server framework
 isort                          # Utility to sort imports
