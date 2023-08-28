@@ -2,7 +2,6 @@ aerich                         # DB migration tool for Tortoise ORM
 bcrypt                         # Library for password hashing
 factory-boy                    # Test helper for creating model factories
 fakeredis                      # Test helper to mock Redis instance
-starlette-admin                # Admin panel for FastAPI / Starlette
 fastapi-jwt-auth               # JWT token integration for FastAPI
 fastapi[all]                   # Async server framework
 isort                          # Utility to sort imports
@@ -12,4 +11,5 @@ pytest                         # Test framework
 pytest-asyncio                 # Async plugin for pytest
 pytest-xdist                   # Utility to run pytest on multiple cores in parallel
 redis                          # Sync/async ORM for Redis
+starlette-admin                # Admin panel for FastAPI / Starlette
 tortoise-orm[asyncpg]==0.18.1  # Async DB ORM

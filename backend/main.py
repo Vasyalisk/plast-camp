@@ -3,10 +3,10 @@ import os
 
 from fastapi import FastAPI, Security
 from starlette.middleware.cors import CORSMiddleware
-from admin import mount_admin
 
 import db
 import exceptions
+from admin import mount_admin
 from conf import settings
 from core import redis, security
 from routes import include_routes

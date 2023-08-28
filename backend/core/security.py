@@ -2,7 +2,7 @@ import typing as t
 from enum import Enum
 
 import bcrypt
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.security.api_key import APIKeyHeader
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
@@ -25,6 +25,11 @@ class Authorize(AuthJWT):
     class Strategy(str, Enum):
         ACCESS_TOKEN = "ACCESS_TOKEN"
         REFRESH_TOKEN = "REFRESH_TOKEN"
+        SESSION = "SESSION"
+
+    def __init__(self, req: Request = None, res: Response = None):
+        super().__init__(req=req, res=res)
+        self._request = req
 
     def raise_401(self, detail: t.Optional[str] = None):
         raise HTTPException(status_code=401, detail=detail)
@@ -43,11 +48,19 @@ class Authorize(AuthJWT):
         method_map = {
             Authorize.Strategy.ACCESS_TOKEN: self.jwt_required,
             Authorize.Strategy.REFRESH_TOKEN: self.jwt_refresh_token_required,
+            Authorize.Strategy.SESSION: self.jwt_session_required,
         }
         try:
             method_map[strategy]()
-        except AuthJWTException:
+        except AuthJWTException as e:
             self.raise_401()
+
+    def jwt_session_required(self):
+        self._token = self._request.session.get("token", None)
+        if self._token is None:
+            self.raise_401()
+
+        self._verify_jwt_in_request(self._token, "access", 'cookies')
 
 
 def configure_jwt(app: FastAPI):

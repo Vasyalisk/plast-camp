@@ -1,4 +1,5 @@
 from starlette_admin import fields
+
 import models
 from admin.views.base import TortoiseModelView
 
@@ -6,7 +7,7 @@ from admin.views.base import TortoiseModelView
 class UserView(TortoiseModelView):
     identity = "user"
     name = "User"
-    label = "Users"
+    label = "Користувачі"
     model = models.User
 
     fields = [

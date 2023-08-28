@@ -1,7 +1,8 @@
+import typing as t
+
+from fastapi import Request
 from starlette_admin import BaseModelView
 from tortoise.models import Model
-from fastapi import Request
-import typing as t
 
 
 class TortoiseModelView(BaseModelView):
