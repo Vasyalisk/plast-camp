@@ -3,7 +3,7 @@ import os
 
 from fastapi import FastAPI, Security
 from starlette.middleware.cors import CORSMiddleware
-from starlette.staticfiles import StaticFiles
+from admin import mount_admin
 
 import db
 import exceptions
@@ -39,7 +39,7 @@ exceptions.add_db_exception_handler(app)
 db.connect_db(app)
 security.configure_jwt(app)
 include_routes(app)
-app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
+mount_admin(app)
 
 
 @app.on_event("shutdown")
