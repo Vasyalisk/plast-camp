@@ -1,8 +1,8 @@
 import typing as t
 
 from fastapi import Request
-from starlette_admin import BaseField, BaseModelView, RequestAction
-from tortoise.models import Model
+from starlette_admin import BaseField, BaseModelView, HasOne, RequestAction
+from tortoise.models import Model, QuerySet
 
 from admin.utils import extract_fields
 
@@ -21,6 +21,30 @@ class TortoiseModelView(BaseModelView):
                 name = f"-{name}"
             yield name
 
+    def get_fk_field_names(self) -> t.List[str]:
+        arr = []
+        for field in self.fields:
+            if isinstance(field, HasOne):
+                arr.append(field.name)
+        return arr
+
+    def format_fk_form_data(self, data: t.Dict[str, t.Any]) -> None:
+        fk_field_names = self.get_fk_field_names()
+        for fk in fk_field_names:
+            if fk not in data:
+                continue
+
+            data[f"{fk}_id"] = data.pop(fk)
+
+    def get_queryset(self, request: Request) -> QuerySet:
+        return self.model.all()
+
+    def get_count_queryset(self, request: Request) -> QuerySet:
+        return self.model.all()
+
+    def get_delete_queryset(self, request: Request) -> QuerySet:
+        return self.model.all()
+
     async def count(
             self,
             request: Request,
@@ -32,7 +56,7 @@ class TortoiseModelView(BaseModelView):
         if where is None:
             where = {}
 
-        return await self.model.filter(**where).count()
+        return await self.get_count_queryset(request).filter(**where).count()
 
     async def find_all(
             self,
@@ -52,25 +76,27 @@ class TortoiseModelView(BaseModelView):
             order_by = []
 
         order_by = self.format_order_by(order_by)
-        return await self.model.filter(**where).order_by(*order_by).offset(skip).limit(limit)
+        return await self.get_queryset(request).filter(**where).order_by(*order_by).offset(skip).limit(limit)
 
     async def find_by_pk(self, request: Request, pk: int) -> t.Optional[Model]:
-        return await self.model.get_or_none(**{self.pk_attr: pk})
+        return await self.get_queryset(request).get_or_none(**{self.pk_attr: pk})
 
     async def find_by_pks(self, request: Request, pks: t.List[Model]) -> t.Sequence[Model]:
-        return await self.model.filter(**{f"{self.pk_attr}__in": pks})
+        return await self.get_queryset(request).filter(**{f"{self.pk_attr}__in": pks})
 
     async def create(self, request: Request, data: dict) -> Model:
+        self.format_fk_form_data(data)
         return await self.model.create(**data)
 
     async def edit(self, request: Request, pk: int, data: t.Dict[str, t.Any]) -> Model:
         model = await self.find_by_pk(request, pk)
+        self.format_fk_form_data(data)
         model = model.update_from_dict(data)
         await model.save()
         return model
 
     async def delete(self, request: Request, pks: t.List[int]) -> t.Optional[int]:
-        return await self.model.filter(**{f"{self.pk_attr}__in": pks}).delete()
+        return await self.get_delete_queryset(request).filter(**{f"{self.pk_attr}__in": pks}).delete()
 
     def get_fields_list(self, request: Request, action: RequestAction = RequestAction.LIST) -> t.Sequence[BaseField]:
         """

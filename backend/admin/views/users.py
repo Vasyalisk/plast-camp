@@ -7,7 +7,7 @@ from admin.views.base import TortoiseModelView
 
 class UserView(TortoiseModelView):
     identity = "user"
-    name = "User"
+    name = "user"
     label = "Users"
     model = models.User
 
@@ -25,6 +25,13 @@ class UserView(TortoiseModelView):
             fields.StringField("last_name", exclude_from_list=True),
             fields.StringField("nickname"),
             fields.DateField("date_of_birth", exclude_from_list=True),
-            fields.IntegerField("country_id", disabled=True, exclude_from_list=True),
         ]),
+        fields.HasOne("country", identity="country"),
     ]
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset = queryset.select_related("country")
+        return queryset
+
+

@@ -14,5 +14,6 @@ def mount_admin(app: FastAPI):
         middlewares=[Middleware(SessionMiddleware, secret_key=settings().SECRET_KEY)]
     )
     admin_app.add_view(admin.views.UserView)
+    admin_app.add_view(admin.views.CountryView)
     admin_app.mount_to(app)
     return admin_app

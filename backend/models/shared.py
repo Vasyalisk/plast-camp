@@ -10,3 +10,6 @@ class Country(models.Model):
 
     name_ukr = fields.CharField(max_length=255, description="Назва українською")
     name_orig = fields.CharField(max_length=255, description="Самоназва країни")
+
+    def __str__(self):
+        return self.name_ukr
