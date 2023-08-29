@@ -1,8 +1,10 @@
 import typing as t
 
 from fastapi import Request
-from starlette_admin import BaseModelView
+from starlette_admin import BaseField, BaseModelView, RequestAction
 from tortoise.models import Model
+
+from admin.utils import extract_fields
 
 
 class TortoiseModelView(BaseModelView):
@@ -69,3 +71,12 @@ class TortoiseModelView(BaseModelView):
 
     async def delete(self, request: Request, pks: t.List[int]) -> t.Optional[int]:
         return await self.model.filter(**{f"{self.pk_attr}__in": pks}).delete()
+
+    def get_fields_list(self, request: Request, action: RequestAction = RequestAction.LIST) -> t.Sequence[BaseField]:
+        """
+        Returns list of fields to render in form OR list of fields which will be used to update DB model
+        :param request:
+        :param action:
+        :return:
+        """
+        return extract_fields(request, self.fields, action)
