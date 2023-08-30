@@ -1,15 +1,17 @@
 import typing as t
+from itertools import chain
 
 from fastapi import Request
-from starlette_admin import BaseField, BaseModelView, HasOne, RequestAction
+from starlette_admin import BaseField, BaseModelView, HasMany, HasOne, RequestAction
+from tortoise.fields.relational import BackwardFKRelation, BackwardOneToOneRelation, ManyToManyFieldInstance
 from tortoise.models import Model, QuerySet
 
-from admin.utils import extract_fields
+from admin.utils import describe_related_fields, extract_fields
 
 
 class TortoiseModelView(BaseModelView):
-    model: Model = None
-    pk_attr = "id"
+    model: t.Type[Model] = None
+    pk_attr = "pk"
 
     def format_search_string(self, search: str) -> t.Dict[str, t.Any]:
         return {"email": search}
@@ -21,20 +23,75 @@ class TortoiseModelView(BaseModelView):
                 name = f"-{name}"
             yield name
 
-    def get_fk_field_names(self) -> t.List[str]:
-        arr = []
+    def get_related_field_names(self) -> t.List[str]:
+        names = []
         for field in self.fields:
             if isinstance(field, HasOne):
-                arr.append(field.name)
-        return arr
+                names.append(field.name)
+            if isinstance(field, HasMany):
+                names.append(field.name)
+        return names
 
-    def format_fk_form_data(self, data: t.Dict[str, t.Any]) -> None:
-        fk_field_names = self.get_fk_field_names()
-        for fk in fk_field_names:
-            if fk not in data:
-                continue
+    def extract_safe_data(self, data: t.Dict[str, t.Any], described_relations: t.Dict[str, dict]) -> t.Dict[str, t.Any]:
+        """
+        Returns data which is safe to use in model.create() and model.update_from_dict() methods
+        :param data:
+        :param described_relations:
+        :return:
+        """
+        safe = ((k, v) for k, v in data.items() if k not in described_relations["backward"])
+        safe = ((k, v) for k, v in safe if k not in described_relations["many_to_many"])
+        safe = dict(safe)
+        return safe
 
-            data[f"{fk}_id"] = data.pop(fk)
+    async def load_relations(
+            self, data: t.Dict[str, t.Any], described_relations: t.Dict[str, t.Dict[str, dict]]
+    ) -> None:
+        described_relations_it = chain(
+            described_relations["forward"].items(),
+            described_relations["backward"].items(),
+            described_relations["many_to_many"].items(),
+        )
+
+        for related_name, descr in described_relations_it:
+            field_type = descr["field_type"]
+            has_many = issubclass(field_type, ManyToManyFieldInstance) or issubclass(field_type, BackwardFKRelation)
+
+            if has_many:
+                data[related_name] = await descr["python_type"].filter(pk__in=data[related_name])
+            else:
+                data[related_name] = await descr["python_type"].get_or_none(pk=data[related_name])
+
+    async def update_many_to_many_relations(
+            self, model: Model, data: t.Dict[str, t.Any], described_many_to_many_relations: t.Dict[str, dict]
+    ):
+        for related_name in described_many_to_many_relations:
+            m2m_manager = getattr(model, related_name)
+            # TODO: update existing models instead of re-creating
+            await m2m_manager.clear()
+            await m2m_manager.add(data[related_name])
+
+    async def update_backward_relations(
+            self, model: Model, data: t.Dict[str, t.Any], described_backward_relations: t.Dict[str, dict]
+    ):
+        for related_name, descr in described_backward_relations.items():
+            related_field = getattr(model, related_name)
+            will_delete = not descr["nullable"]
+            related_model = related_field.remote_model
+            related_fk = related_field.relation_field
+
+            old_relation_pks = await related_field.all().values_list(related_field.from_field, flat=True)
+            new_relations = data[related_name]
+            new_relation_pks = [one.pk for one in new_relations]
+
+            delete_queryset = related_model.filter(pk__in=set(old_relation_pks).difference(new_relation_pks))
+            if will_delete:
+                await delete_queryset.delete()
+            else:
+                await delete_queryset.update(**{related_fk: None})
+
+            await related_model.filter(pk__in=set(new_relation_pks).difference(old_relation_pks)).update(
+                **{related_fk: model.pk})
 
     def get_queryset(self, request: Request) -> QuerySet:
         return self.model.all()
@@ -85,14 +142,29 @@ class TortoiseModelView(BaseModelView):
         return await self.get_queryset(request).filter(**{f"{self.pk_attr}__in": pks})
 
     async def create(self, request: Request, data: dict) -> Model:
-        self.format_fk_form_data(data)
-        return await self.model.create(**data)
+        related_field_names = self.get_related_field_names()
+        related_field_names = [one for one in related_field_names if one in data]
+        descr = describe_related_fields(self.model, related_field_names)
+        await self.load_relations(data, descr)
+
+        model = await self.model.create(**self.extract_safe_data(data, descr))
+
+        await self.update_many_to_many_relations(model, data, descr["many_to_many"])
+        await self.update_backward_relations(model, data, descr["backward"])
+        return model
 
     async def edit(self, request: Request, pk: int, data: t.Dict[str, t.Any]) -> Model:
+        related_field_names = self.get_related_field_names()
+        related_field_names = [one for one in related_field_names if one in data]
+        descr = describe_related_fields(self.model, related_field_names)
+        await self.load_relations(data, descr)
+
         model = await self.find_by_pk(request, pk)
-        self.format_fk_form_data(data)
-        model = model.update_from_dict(data)
+        model = model.update_from_dict(self.extract_safe_data(data, descr))
         await model.save()
+
+        await self.update_many_to_many_relations(model, data, descr["many_to_many"])
+        await self.update_backward_relations(model, data, descr["backward"])
         return model
 
     async def delete(self, request: Request, pks: t.List[int]) -> t.Optional[int]:

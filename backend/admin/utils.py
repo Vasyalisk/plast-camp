@@ -1,7 +1,9 @@
 import typing as t
+from itertools import chain
 
 from fastapi import Request
 from starlette_admin import BaseField, RequestAction
+from tortoise import Model
 
 
 def extract_fields(
@@ -40,3 +42,45 @@ def extract_fields(
 
         arr.append(field)
     return arr
+
+
+def describe_related_fields(model: t.Type[Model], related_field_names: t.List[str]) -> t.Dict[str, t.Dict[str, dict]]:
+    """
+    Returns described portion of specified fields as Python objects
+    See https://tortoise.github.io/fields.html#tortoise.fields.base.Field.describe
+    :param model:
+    :param related_field_names:
+    :return:
+    """
+    desc = model.describe(serializable=False)
+    forward_it = chain(
+        desc.get("fk_fields", []),
+        desc.get("o2o_fields", []),
+    )
+    backward_it = chain(
+        desc.get("backward_fk_fields", []),
+        desc.get("backward_o2o_fields", []),
+    )
+    described = {
+        "forward": {one["name"]: one for one in forward_it if one["name"] in related_field_names},
+        "backward": {one["name"]: one for one in backward_it if one["name"] in related_field_names},
+        "many_to_many": {one["name"]: one for one in desc.get("m2m_fields", []) if one["name"] in related_field_names},
+    }
+    return described
+
+
+def get_related_models(
+        model: t.Type[Model], related_field_names: t.List[str]
+) -> t.Dict[str, t.Dict[str, Model]]:
+    """
+    Return related Tortoise models grouped by forward, backward and many-to-many relations.
+    :param model:
+    :param related_field_names:
+    :return:
+    """
+    desc = describe_related_fields(model, related_field_names)
+    return {
+        "forward": {k: v["python_type"] for k, v in desc["forward"].items()},
+        "backward": {k: v["python_type"] for k, v in desc["backward"].items()},
+        "many_to_many": {k: v["python_type"] for k, v in desc["many_to_many"].items()},
+    }

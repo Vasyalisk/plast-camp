@@ -48,3 +48,4 @@ class User(models.Model):
     @property
     def username(self) -> str:
         return self.email
+
