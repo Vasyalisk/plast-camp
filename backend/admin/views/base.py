@@ -3,7 +3,7 @@ from itertools import chain
 
 from fastapi import Request
 from starlette_admin import BaseField, BaseModelView, HasMany, HasOne, RequestAction
-from tortoise.fields.relational import BackwardFKRelation, BackwardOneToOneRelation, ManyToManyFieldInstance
+from tortoise.fields.relational import BackwardFKRelation, ManyToManyFieldInstance
 from tortoise.models import Model, QuerySet
 
 from admin.utils import describe_related_fields, extract_fields
