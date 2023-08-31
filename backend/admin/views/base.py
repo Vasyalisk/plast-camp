@@ -5,6 +5,7 @@ from fastapi import Request
 from starlette_admin import BaseField, BaseModelView, HasMany, HasOne, RequestAction
 from tortoise.fields.relational import BackwardFKRelation, ManyToManyFieldInstance
 from tortoise.models import Model, QuerySet
+from tortoise import models
 
 from admin.utils import describe_related_fields, extract_fields
 
@@ -13,8 +14,50 @@ class TortoiseModelView(BaseModelView):
     model: t.Type[Model] = None
     pk_attr = "pk"
 
-    def format_search_string(self, search: str) -> t.Dict[str, t.Any]:
-        return {"email": search}
+    def format_search_string(self, search: str) -> models.Q:
+        return models.Q(email=search)
+
+    def format_search_value(self, condition: str, value) -> models.Q:
+        is_negated = condition.startswith("not_") or condition == "neq"
+        if is_negated:
+            condition = condition[4:]
+
+        lookup_map = {
+            "startswith": "startswith",
+            "contains": "contains",
+            "eq": "exact",
+            "neq": "exact",
+        }
+
+        lookup = models.Q(**{lookup_map[condition]: value})
+        if is_negated:
+            lookup = ~lookup
+
+        return lookup
+
+    def format_search_kwarg(self, kwarg, value: t.List[t.Dict[str, t.Any]]) -> models.Q:
+        if kwarg == "and":
+            sub_kwargs = []
+            for one in value:
+                key, val = tuple(one.items())[0]
+                sub_kwargs.append(self.format_search_kwarg(key, [val]))
+            return models.Q(*sub_kwargs, join_type=models.Q.AND)
+
+        if kwarg == "or":
+            sub_kwargs = []
+            for one in value:
+                key, val = tuple(one.items())[0]
+                sub_kwargs.append(self.format_search_kwarg(key, [val]))
+            return models.Q(*sub_kwargs, join_type=models.Q.OR)
+
+        print(value)
+        key, val = tuple(value[0].items())[0]
+        return self.format_search_value(key, val)
+
+    def format_search_filter(self, search: dict):
+        print(search)
+        kwarg, value = tuple(search.items())[0]
+        return self.format_search_kwarg(kwarg, value)
 
     def format_order_by(self, order_by: t.List[str]) -> t.List[str]:
         for field in order_by:
@@ -110,10 +153,13 @@ class TortoiseModelView(BaseModelView):
         if isinstance(where, str):
             where = self.format_search_string(where)
 
-        if where is None:
-            where = {}
+        if where:
+            where = self.format_search_filter(where)
 
-        return await self.get_count_queryset(request).filter(**where).count()
+        if where is None:
+            where = []
+
+        return await self.get_count_queryset(request).filter(*where).count()
 
     async def find_all(
             self,
@@ -126,14 +172,17 @@ class TortoiseModelView(BaseModelView):
         if isinstance(where, str):
             where = self.format_search_string(where)
 
+        if where:
+            where = self.format_search_filter(where)
+
         if where is None:
-            where = {}
+            where = []
 
         if order_by is None:
             order_by = []
 
         order_by = self.format_order_by(order_by)
-        return await self.get_queryset(request).filter(**where).order_by(*order_by).offset(skip).limit(limit)
+        return await self.get_queryset(request).filter(*where).order_by(*order_by).offset(skip).limit(limit)
 
     async def find_by_pk(self, request: Request, pk: int) -> t.Optional[Model]:
         return await self.get_queryset(request).get_or_none(**{self.pk_attr: pk})
