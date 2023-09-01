@@ -1,3 +1,6 @@
+import typing as t
+
+import pytz
 from fastapi import HTTPException
 from starlette.requests import Request
 from starlette.responses import Response
@@ -9,6 +12,22 @@ from core import security
 
 
 class EmailAndPasswordProvider(AuthProvider):
+    def __init__(
+            self,
+            login_path: str = "/login",
+            logout_path: str = "/logout",
+            allow_paths: t.Optional[t.Sequence[str]] = None,
+    ):
+        super().__init__(login_path, logout_path, allow_paths)
+
+        if self.allow_paths is None:
+            self.allow_paths = []
+
+        self.allow_paths.extend([
+            "/statics/js/vendor/moment.min.js",
+            "/statics/js/vendor/moment-timezone-with-data-10-year-range.js",
+        ])
+
     async def login(
             self,
             username: str,
@@ -28,7 +47,11 @@ class EmailAndPasswordProvider(AuthProvider):
         if not is_valid:
             raise LoginFailed("Invalid username or password")
 
-        request.session.update({"token": security.Authorize().create_access_token(user.id)})
+        timezone: str = (await request.form()).get("timezone", "UTC")
+        request.session.update({
+            "token": security.Authorize().create_access_token(user.id),
+            "timezone": timezone,
+        })
         return response
 
     async def is_authenticated(self, request) -> bool:

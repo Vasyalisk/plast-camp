@@ -3,11 +3,34 @@ from itertools import chain
 
 from fastapi import Request
 from starlette_admin import BaseField, BaseModelView, HasMany, HasOne, RequestAction
+from tortoise import models
 from tortoise.fields.relational import BackwardFKRelation, ManyToManyFieldInstance
 from tortoise.models import Model, QuerySet
-from tortoise import models
 
 from admin.utils import describe_related_fields, extract_fields
+
+SEARCH_OPERATORS = {
+    "eq": lambda f, v: models.Q(**{f + "__iexact": v}),
+    "neq": lambda f, v: ~models.Q(**{f + "__iexact": v}),
+    "lt": lambda f, v: models.Q(**{f + "__lt": v}),
+    "gt": lambda f, v: models.Q(**{f + "__gt": v}),
+    "le": lambda f, v: models.Q(**{f + "__lte": v}),
+    "ge": lambda f, v: models.Q(**{f + "__gte": v}),
+    "in": lambda f, v: models.Q(**{f + "__in": v}),
+    "not_in": lambda f, v: ~models.Q(**{f + "__in": v}),
+    "startswith": lambda f, v: models.Q(**{f + "__istartswith": v}),
+    "not_startswith": lambda f, v: ~models.Q(**{f + "__istartswith": v}),
+    "endswith": lambda f, v: models.Q(**{f + "__iendswith": v}),
+    "not_endswith": lambda f, v: ~models.Q(**{f + "__iendswith": v}),
+    "contains": lambda f, v: models.Q(**{f + "__icontains": v}),
+    "not_contains": lambda f, v: ~models.Q(**{f + "__icontains": v}),
+    "is_false": lambda f, v: models.Q(**{f: False}),
+    "is_true": lambda f, v: models.Q(**{f: True}),
+    "is_null": lambda f, v: models.Q(**{f + "__isnull": True}),
+    "is_not_null": lambda f, v: models.Q(**{f + "__isnull": False}),
+    "between": lambda f, v: models.Q(**{f + "__range": v}),
+    "not_between": lambda f, v: ~models.Q(**{f + "__range": v}),
+}
 
 
 class TortoiseModelView(BaseModelView):
@@ -17,47 +40,27 @@ class TortoiseModelView(BaseModelView):
     def format_search_string(self, search: str) -> models.Q:
         return models.Q(email=search)
 
-    def format_search_value(self, condition: str, value) -> models.Q:
-        is_negated = condition.startswith("not_") or condition == "neq"
-        if is_negated:
-            condition = condition[4:]
-
-        lookup_map = {
-            "startswith": "startswith",
-            "contains": "contains",
-            "eq": "exact",
-            "neq": "exact",
-        }
-
-        lookup = models.Q(**{lookup_map[condition]: value})
-        if is_negated:
-            lookup = ~lookup
-
-        return lookup
-
-    def format_search_kwarg(self, kwarg, value: t.List[t.Dict[str, t.Any]]) -> models.Q:
+    def format_search_kwarg(self, kwarg, value: t.Union[dict, t.List[dict]]) -> models.Q:
         if kwarg == "and":
             sub_kwargs = []
             for one in value:
                 key, val = tuple(one.items())[0]
-                sub_kwargs.append(self.format_search_kwarg(key, [val]))
+                sub_kwargs.append(self.format_search_kwarg(key, val))
             return models.Q(*sub_kwargs, join_type=models.Q.AND)
 
         if kwarg == "or":
             sub_kwargs = []
             for one in value:
                 key, val = tuple(one.items())[0]
-                sub_kwargs.append(self.format_search_kwarg(key, [val]))
+                sub_kwargs.append(self.format_search_kwarg(key, val))
             return models.Q(*sub_kwargs, join_type=models.Q.OR)
 
-        print(value)
-        key, val = tuple(value[0].items())[0]
-        return self.format_search_value(key, val)
+        condition, condition_value = tuple(value.items())[0]
+        return SEARCH_OPERATORS[condition](kwarg, condition_value)
 
-    def format_search_filter(self, search: dict):
-        print(search)
+    def format_search_filter(self, search: dict) -> t.List[models.Q]:
         kwarg, value = tuple(search.items())[0]
-        return self.format_search_kwarg(kwarg, value)
+        return [self.format_search_kwarg(kwarg, value)]
 
     def format_order_by(self, order_by: t.List[str]) -> t.List[str]:
         for field in order_by:

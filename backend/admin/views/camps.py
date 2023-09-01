@@ -1,6 +1,7 @@
 from starlette_admin import fields
 
 import models
+from admin.fields import AwareDateTimeField
 from admin.views.base import TortoiseModelView
 
 
@@ -12,7 +13,7 @@ class CampView(TortoiseModelView):
 
     fields = [
         fields.IntegerField("id", disabled=True, exclude_from_create=True),
-        fields.DateTimeField("created_at", disabled=True, exclude_from_create=True),
+        AwareDateTimeField("created_at", disabled=True, exclude_from_create=True),
         fields.DateField("date_start"),
         fields.DateField("date_end"),
         fields.TextAreaField("description", maxlength=1024),
@@ -36,7 +37,7 @@ class CampMemberView(TortoiseModelView):
 
     fields = [
         fields.IntegerField("id", disabled=True, exclude_from_create=True),
-        fields.DateTimeField("created_at", disabled=True, exclude_from_create=True),
+        AwareDateTimeField("created_at", disabled=True, exclude_from_create=True),
         fields.EnumField("role", enum=models.CampMember.Role),
         fields.HasOne("camp", identity="camp"),
         fields.HasOne("user", identity="user"),

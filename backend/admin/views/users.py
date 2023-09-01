@@ -1,7 +1,7 @@
 from starlette_admin import fields
 
 import models
-from admin.fields import ContainerField
+from admin.fields import AwareDateTimeField, ContainerField
 from admin.views.base import TortoiseModelView
 
 
@@ -13,7 +13,7 @@ class UserView(TortoiseModelView):
 
     fields = [
         fields.IntegerField("id", disabled=True, exclude_from_list=True),
-        fields.DateTimeField("created_at", disabled=True),
+        AwareDateTimeField("created_at", disabled=True),
         fields.EmailField("email"),
         ContainerField("credentials", [
             fields.EnumField("role", enum=models.User.Role),
