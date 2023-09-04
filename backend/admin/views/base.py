@@ -35,7 +35,8 @@ SEARCH_OPERATORS = {
 
 class TortoiseModelView(BaseModelView):
     model: t.Type[Model] = None
-    pk_attr = "pk"
+    pk_attr = "id"
+
 
     def format_search_string(self, search: str) -> models.Q:
         return models.Q(email=search)

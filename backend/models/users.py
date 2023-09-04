@@ -1,5 +1,6 @@
 from enum import Enum
 
+from fastapi import Request
 from tortoise import fields, models
 
 
@@ -45,7 +46,16 @@ class User(models.Model):
         "models.Country", null=True, default=None, on_delete=fields.SET_NULL, related_name="users", description="Край"
     )
 
-    @property
-    def username(self) -> str:
-        return self.email
+    def full_name(self) -> str:
+        return " ".join(one for one in (self.first_name, self.last_name) if one)
 
+    async def __admin_repr__(self, request: Request) -> str:
+        return self.nickname or self.full_name() or str(self.id)
+
+    async def __admin_select2_repr__(self, request: Request) -> str:
+        # TODO: add translations
+        return f"<span>Nickname: {self.nickname or '...'}, name: {self.full_name() or '...'}, id: {self.id}</span>"
+
+    # @property
+    # def username(self) -> str:
+    #     return self.email
