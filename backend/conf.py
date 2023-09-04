@@ -36,6 +36,10 @@ class Settings(BaseSettings):
     DEFAULT_PAGE_SIZE: t.Optional[int] = 20
     MAX_PAGE_SIZE: t.Optional[int] = 50
 
+    TRANSLATION_LOCALES: t.List[str] = ["uk", "en"]
+    TRANSLATION_DEFAULT_LOCALE: t.Optional[str] = "uk"
+    TRANSLATION_DIR: t.Optional[str] = "/backend/translations/locales"
+
     LOG_LEVEL: str = "INFO"
 
     class Config:
@@ -45,3 +49,4 @@ class Settings(BaseSettings):
 @lru_cache()
 def settings() -> Settings:
     return Settings()
+

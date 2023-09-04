@@ -3,12 +3,13 @@ from starlette_admin import fields
 import models
 from admin.fields import AwareDateTimeField
 from admin.views.base import TortoiseModelView
+from translations import lazy_gettext as _
 
 
 class CampView(TortoiseModelView):
     model = models.Camp
-    label = "Camps"
-    name = "camp"
+    label = _("Camps")
+    name = _("camp")
     identity = "camp"
 
     fields = [
@@ -31,9 +32,9 @@ class CampView(TortoiseModelView):
 
 class CampMemberView(TortoiseModelView):
     model = models.CampMember
-    name = "camp_member"
+    name = _("participant")
     identity = "camp_member"
-    label = "Camp Members"
+    label = _("Participants")
 
     fields = [
         fields.IntegerField("id", disabled=True, exclude_from_create=True),

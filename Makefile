@@ -46,3 +46,19 @@ lint:
 	@docker compose run --rm backend python /scripts/sort_requirements.py
 	@echo "Sorting imports..."
 	@docker compose run --rm backend isort /backend --profile black --line-length 120
+
+.PHONY: babel-extract
+babel-extract:
+	@docker compose run --rm backend pybabel extract -F pybabel.cfg -o translations/locales/locales.pot . /usr/local/lib/python3.11/site-packages/starlette_admin
+
+.PHONY: babel-init
+babel-init:
+	@docker compose run --rm backend pybabel init -i translations/locales/locales.pot -d translations/locales --locale ${locale}
+
+.PHONY: babel-update
+babel-update:
+	@docker compose run --rm backend pybabel update -i translations/locales/locales.pot -d translations/locales
+
+.PHONE: babel-compile
+babel-compile:
+	@docker compose run --rm backend pybabel compile -d translations/locales

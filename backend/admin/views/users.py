@@ -3,12 +3,13 @@ from starlette_admin import fields
 import models
 from admin.fields import AwareDateTimeField, ContainerField
 from admin.views.base import TortoiseModelView
+from translations import lazy_gettext as _
 
 
 class UserView(TortoiseModelView):
     identity = "user"
-    name = "user"
-    label = "Users"
+    name = _("user")
+    label = _("Users")
     model = models.User
 
     fields = [

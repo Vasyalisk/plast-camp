@@ -1,4 +1,5 @@
 aerich                         # DB migration tool for Tortoise ORM
+babel                          # Localization / translation support
 bcrypt                         # Library for password hashing
 factory-boy                    # Test helper for creating model factories
 fakeredis                      # Test helper to mock Redis instance

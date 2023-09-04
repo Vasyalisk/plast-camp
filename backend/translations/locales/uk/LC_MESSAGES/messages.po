@@ -1,0 +1,238 @@
+# Ukrainian translations for PROJECT.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-09-04 15:07+0000\n"
+"PO-Revision-Date: 2023-09-04 14:15+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk\n"
+"Language-Team: uk <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: admin/app.py:30
+msgid "Plast Camp Admin"
+msgstr "Пластові Табори - Адмін"
+
+#: admin/app.py:45 admin/views/users.py:12
+msgid "Users"
+msgstr "Користувачі"
+
+#: admin/app.py:49 admin/views/camps.py:11
+msgid "Camps"
+msgstr "Табори"
+
+#: admin/app.py:56
+msgid "Shared"
+msgstr "Загальне"
+
+#: admin/app.py:61
+msgid "Plast Official"
+msgstr "Сторінка Пласту"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/login.html:16
+#: admin/templates/login.html:16
+msgid "Login to your account"
+msgstr "Увійти до облікового запису"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/login.html:32
+#: admin/templates/login.html:32
+msgid "Username"
+msgstr "Логін"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/login.html:43
+#: admin/templates/login.html:43
+msgid "Password"
+msgstr "Пароль"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/login.html:56
+#: admin/templates/login.html:56
+msgid "Remember me"
+msgstr "Запам'ятати мене"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/login.html:60
+#: admin/templates/login.html:60
+msgid "Sign in"
+msgstr "Увійти"
+
+#: admin/views/camps.py:12
+msgid "camp"
+msgstr "табір"
+
+#: admin/views/camps.py:35
+msgid "participant"
+msgstr "учасник"
+
+#: admin/views/camps.py:37
+msgid "Participants"
+msgstr "Учасники"
+
+#: admin/views/shared.py:12
+msgid "country"
+msgstr "країна"
+
+#: admin/views/shared.py:13
+msgid "Countries"
+msgstr "Країни"
+
+#: admin/views/users.py:11
+msgid "user"
+msgstr "користувач"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/actions.py:10
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/modals/actions.html:12
+msgid "Yes, Proceed"
+msgstr "Так, Продовжити"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/auth.py:31
+msgid "Administrator"
+msgstr "Адміністратор"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/base.py:44
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/contrib/odmantic/admin.py:17
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/contrib/sqla/admin.py:28
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:7
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/detail.html:8
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/edit.html:7
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:7
+msgid "Admin"
+msgstr "Адмін"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/base.py:248
+#, python-format
+msgid "Model with identity %(identity)s not found"
+msgstr "Модель з ідентифікатором %(identity)s не знайдено"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/detail.html:41
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/forms/_delete.html:8
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/modals/delete.html:25
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/views.py:352
+msgid "Delete"
+msgstr "Видалити"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/views.py:353
+msgid "Are you sure you want to delete selected items?"
+msgstr "Ви впевнені, що хочете видалити обрані записи?"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/views.py:354
+msgid "Yes, delete all"
+msgstr "Так, видалити усі"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/views.py:359
+#, python-format
+msgid "Item was successfully deleted"
+msgid_plural "%(count)d items were successfully deleted"
+msgstr[0] "Запис було успішно видалено"
+msgstr[1] "Було успішно видалено %(count)d запис"
+msgstr[2] "Було успішно видалено %(count)d записів"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/views.py:676
+msgid "All"
+msgstr "Усі"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:12
+msgid "Create"
+msgstr "Створити"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:25
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:65
+#, python-format
+msgid "New %(name)s"
+msgstr "Новий/нова %(name)s"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:44
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/edit.html:46
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/modals/actions.html:10
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/modals/delete.html:21
+msgid "Cancel"
+msgstr "Відмінити"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:46
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/edit.html:48
+msgid "Save and add another"
+msgstr "Зберегти і додати"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:48
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/edit.html:50
+msgid "Save and continue editing"
+msgstr "Зберегти і продовжити"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:49
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/edit.html:51
+msgid "Save"
+msgstr "Зберегти"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/detail.html:13
+msgid "Detail"
+msgstr "Деталі"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/detail.html:48
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/edit.html:12
+msgid "Edit"
+msgstr "Редагувати"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/detail.html:61
+msgid "Attribute"
+msgstr "Параметр"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/detail.html:62
+msgid "Value"
+msgstr "Значення"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/edit.html:27
+#, python-format
+msgid "Edit %(name)s"
+msgstr "Редагувати %(name)s"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/error.html:7
+msgid "Oops… You just found an error page"
+msgstr "Упс… Ви тільки-но що знайшли сторінку з помилкою"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/error.html:29
+msgid "Take me home"
+msgstr "Додому"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/layout.html:95
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/layout.html:118
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/layout.html:204
+msgid "Logout"
+msgstr "Вийти з облікового запису"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:32
+msgid "With selected"
+msgstr "Відмічені"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:98
+msgid "Search"
+msgstr "Пошук"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/forms/_delete.html:13
+msgid "Checked this to delete current content of this field"
+msgstr "Виділіть, щоб видалити поточний вміст цього поля"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/forms/enum.html:5
+#, python-format
+msgid "Select a %(label)s"
+msgstr "Виділити %(label)s"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/forms/list.html:44
+msgid "Add item"
+msgstr "Додати"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/modals/delete.html:15
+msgid "Are you sure you want to delete this item?"
+msgstr "Ви впевнені, що хочете видалити цей запис?"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/modals/loading.html:7
+msgid "Loading"
+msgstr "Завантаження"
+
