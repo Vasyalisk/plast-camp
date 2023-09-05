@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-09-05 09:56+0000\n"
+"POT-Creation-Date: 2023-09-05 11:55+0000\n"
 "PO-Revision-Date: 2023-09-05 09:57+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,53 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: admin/app.py:33
+#: admin/app.py:29
 msgid "Plast Camp Admin"
 msgstr "Plast Camp Admin"
 
-#: admin/app.py:48 admin/views/users.py:12
+#: admin/app.py:44 admin/views/users.py:12
 msgid "Users"
 msgstr "Users"
 
-#: admin/app.py:52 admin/views/camps.py:11
+#: admin/app.py:48 admin/views/camps.py:11
 msgid "Camps"
 msgstr "Camps"
 
-#: admin/app.py:59
+#: admin/app.py:55
 msgid "Shared"
 msgstr "Shared"
 
-#: admin/app.py:64
+#: admin/app.py:60
 msgid "Plast Official"
 msgstr "Plast Official"
-
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/base.py:44
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/contrib/odmantic/admin.py:17
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/contrib/sqla/admin.py:28
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:7
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/detail.html:8
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/edit.html:7
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:7
-#: admin/templates/list.html:7
-msgid "Admin"
-msgstr "Admin"
-
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:32
-#: admin/templates/list.html:32
-msgid "With selected"
-msgstr "With selected"
-
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:25
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:65
-#: admin/templates/list.html:65
-#, python-format
-msgid "New %(name)s"
-msgstr "New %(name)s"
-
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:98
-#: admin/templates/list.html:98
-msgid "Search"
-msgstr "Search"
 
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/login.html:16
 #: admin/templates/login.html:16
@@ -91,9 +63,42 @@ msgstr "Remember me"
 msgid "Sign in"
 msgstr "Sign in"
 
-#: admin/views/camps.py:12
+#: admin/views/camps.py:12 admin/views/camps.py:47
 msgid "camp"
 msgstr "camp"
+
+#: admin/views/camps.py:17 admin/views/camps.py:41 admin/views/shared.py:17
+#: admin/views/users.py:17
+msgid "created_at"
+msgstr "Created At"
+
+#: admin/views/camps.py:18
+msgid "date_start"
+msgstr "Started At"
+
+#: admin/views/camps.py:19
+msgid "date_end"
+msgstr "Ended At"
+
+#: admin/views/camps.py:20
+msgid "description"
+msgstr "Description"
+
+#: admin/views/camps.py:21
+msgid "location"
+msgstr "Location"
+
+#: admin/views/camps.py:22
+msgid "name"
+msgstr "Name"
+
+#: admin/views/camps.py:23 admin/views/shared.py:12 admin/views/users.py:34
+msgid "country"
+msgstr "country"
+
+#: admin/views/camps.py:24
+msgid "members"
+msgstr "Members"
 
 #: admin/views/camps.py:35
 msgid "participant"
@@ -103,17 +108,77 @@ msgstr "participant"
 msgid "Participants"
 msgstr "Participants"
 
-#: admin/views/shared.py:12
-msgid "country"
-msgstr "country"
+#: admin/views/camps.py:42 admin/views/users.py:20
+msgid "role"
+msgstr "Role"
+
+#: admin/views/camps.py:43
+msgid "GUEST"
+msgstr "Guest"
+
+#: admin/views/camps.py:44
+msgid "PARTICIPANT"
+msgstr "Participant"
+
+#: admin/views/camps.py:45
+msgid "STAFF"
+msgstr "Staff"
+
+#: admin/views/camps.py:48 admin/views/users.py:11
+msgid "user"
+msgstr "user"
 
 #: admin/views/shared.py:13
 msgid "Countries"
 msgstr "Countries"
 
-#: admin/views/users.py:11
-msgid "user"
-msgstr "user"
+#: admin/views/shared.py:18
+msgid "name_ukr"
+msgstr "Ukrainian Name"
+
+#: admin/views/shared.py:19
+msgid "name_orig"
+msgstr "Original Name"
+
+#: admin/views/users.py:18
+msgid "email"
+msgstr "Email"
+
+#: admin/views/users.py:21
+msgid "BASE"
+msgstr "Base"
+
+#: admin/views/users.py:22
+msgid "ADMIN"
+msgstr "Admin"
+
+#: admin/views/users.py:23
+msgid "SUPER_ADMIN"
+msgstr "Superadmin"
+
+#: admin/views/users.py:25
+msgid "is_email_verified"
+msgstr "Is Email Verified?"
+
+#: admin/views/users.py:26
+msgid "password"
+msgstr "Password"
+
+#: admin/views/users.py:29
+msgid "first_name"
+msgstr "First Name"
+
+#: admin/views/users.py:30
+msgid "last_name"
+msgstr "Last Name"
+
+#: admin/views/users.py:31
+msgid "nickname"
+msgstr "Nickname"
+
+#: admin/views/users.py:32
+msgid "date_of_birth"
+msgstr "Date of Birth"
 
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/actions.py:10
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/modals/actions.html:12
@@ -123,6 +188,16 @@ msgstr "Yes, Proceed"
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/auth.py:31
 msgid "Administrator"
 msgstr "Administrator"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/base.py:44
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/contrib/odmantic/admin.py:17
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/contrib/sqla/admin.py:28
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:7
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/detail.html:8
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/edit.html:7
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:7
+msgid "Admin"
+msgstr "Admin"
 
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/base.py:248
 #, python-format
@@ -158,6 +233,12 @@ msgstr "All"
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:12
 msgid "Create"
 msgstr "Create"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:25
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:65
+#, python-format
+msgid "New %(name)s"
+msgstr "New %(name)s"
 
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:44
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/edit.html:46
@@ -216,6 +297,14 @@ msgstr "Take me home"
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/layout.html:204
 msgid "Logout"
 msgstr "Logout"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:32
+msgid "With selected"
+msgstr "With selected"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:98
+msgid "Search"
+msgstr "Search"
 
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/forms/_delete.html:13
 msgid "Checked this to delete current content of this field"
