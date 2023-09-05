@@ -39,7 +39,7 @@ def ngettext(msgid1: str, msgid2: str, n: int) -> str:
 
 
 def lazy_gettext(message: str) -> str:
-    return LazyProxy(gettext, message)  # type: ignore[return-value]
+    return LazyProxy(gettext, message, enable_cache=False)  # type: ignore[return-value]
 
 
 def format_datetime(

@@ -7,6 +7,7 @@ from tortoise import models
 from tortoise.fields.relational import BackwardFKRelation, ManyToManyFieldInstance
 from tortoise.models import Model, QuerySet
 
+import translations
 from admin.utils import describe_related_fields, extract_fields
 
 SEARCH_OPERATORS = {
@@ -36,7 +37,6 @@ SEARCH_OPERATORS = {
 class TortoiseModelView(BaseModelView):
     model: t.Type[Model] = None
     pk_attr = "id"
-
 
     def format_search_string(self, search: str) -> models.Q:
         return models.Q(email=search)
@@ -231,3 +231,8 @@ class TortoiseModelView(BaseModelView):
         :return:
         """
         return extract_fields(request, self.fields, action)
+
+    async def _configs(self, request: Request) -> t.Dict[str, t.Any]:
+        conf = await super()._configs(request)
+        conf["locale"] = translations.get_locale()
+        return conf

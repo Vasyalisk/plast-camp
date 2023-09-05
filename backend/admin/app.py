@@ -21,7 +21,6 @@ class Admin(BaseAdmin):
         super()._setup_templates()
         self.templates.env.globals["get_locale"] = translations.get_locale
         self.templates.env.globals["get_locale_display_name"] = translations.get_locale_display_name
-        self.templates.env.globals["get_locale_display_name"] = translations.get_locale_display_name
         self.templates.env.install_gettext_callables(translations.gettext, translations.ngettext, True)
 
 

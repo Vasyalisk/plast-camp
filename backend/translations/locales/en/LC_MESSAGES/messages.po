@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-09-04 15:07+0000\n"
-"PO-Revision-Date: 2023-09-04 14:15+0000\n"
+"POT-Creation-Date: 2023-09-05 09:56+0000\n"
+"PO-Revision-Date: 2023-09-05 09:57+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
@@ -18,25 +18,53 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: admin/app.py:30
+#: admin/app.py:33
 msgid "Plast Camp Admin"
 msgstr "Plast Camp Admin"
 
-#: admin/app.py:45 admin/views/users.py:12
+#: admin/app.py:48 admin/views/users.py:12
 msgid "Users"
 msgstr "Users"
 
-#: admin/app.py:49 admin/views/camps.py:11
+#: admin/app.py:52 admin/views/camps.py:11
 msgid "Camps"
 msgstr "Camps"
 
-#: admin/app.py:56
+#: admin/app.py:59
 msgid "Shared"
 msgstr "Shared"
 
-#: admin/app.py:61
+#: admin/app.py:64
 msgid "Plast Official"
 msgstr "Plast Official"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/base.py:44
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/contrib/odmantic/admin.py:17
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/contrib/sqla/admin.py:28
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:7
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/detail.html:8
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/edit.html:7
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:7
+#: admin/templates/list.html:7
+msgid "Admin"
+msgstr "Admin"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:32
+#: admin/templates/list.html:32
+msgid "With selected"
+msgstr "With selected"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:25
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:65
+#: admin/templates/list.html:65
+#, python-format
+msgid "New %(name)s"
+msgstr "New %(name)s"
+
+#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:98
+#: admin/templates/list.html:98
+msgid "Search"
+msgstr "Search"
 
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/login.html:16
 #: admin/templates/login.html:16
@@ -96,16 +124,6 @@ msgstr "Yes, Proceed"
 msgid "Administrator"
 msgstr "Administrator"
 
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/base.py:44
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/contrib/odmantic/admin.py:17
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/contrib/sqla/admin.py:28
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:7
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/detail.html:8
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/edit.html:7
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:7
-msgid "Admin"
-msgstr "Admin"
-
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/base.py:248
 #, python-format
 msgid "Model with identity %(identity)s not found"
@@ -140,12 +158,6 @@ msgstr "All"
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:12
 msgid "Create"
 msgstr "Create"
-
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:25
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:65
-#, python-format
-msgid "New %(name)s"
-msgstr "New %(name)s"
 
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/create.html:44
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/edit.html:46
@@ -204,14 +216,6 @@ msgstr "Take me home"
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/layout.html:204
 msgid "Logout"
 msgstr "Logout"
-
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:32
-msgid "With selected"
-msgstr "With selected"
-
-#: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/list.html:98
-msgid "Search"
-msgstr "Search"
 
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/forms/_delete.html:13
 msgid "Checked this to delete current content of this field"

@@ -35,4 +35,3 @@ class UserView(TortoiseModelView):
         queryset = queryset.select_related("country")
         return queryset
 
-
