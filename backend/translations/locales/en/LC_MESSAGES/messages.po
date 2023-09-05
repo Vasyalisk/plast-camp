@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-09-05 11:55+0000\n"
+"POT-Creation-Date: 2023-09-05 12:47+0000\n"
 "PO-Revision-Date: 2023-09-05 09:57+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -144,6 +144,10 @@ msgstr "Original Name"
 msgid "email"
 msgstr "Email"
 
+#: admin/views/users.py:19
+msgid "credentials"
+msgstr "Credentials"
+
 #: admin/views/users.py:21
 msgid "BASE"
 msgstr "Base"
@@ -163,6 +167,10 @@ msgstr "Is Email Verified?"
 #: admin/views/users.py:26
 msgid "password"
 msgstr "Password"
+
+#: admin/views/users.py:28
+msgid "personal_info"
+msgstr "Personal Info"
 
 #: admin/views/users.py:29
 msgid "first_name"

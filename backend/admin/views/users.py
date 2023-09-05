@@ -16,7 +16,7 @@ class UserView(TortoiseModelView):
         fields.IntegerField("id", disabled=True, exclude_from_list=True),
         AwareDateTimeField("created_at", label=_("created_at"), disabled=True),
         fields.EmailField("email", label=_("email")),
-        ContainerField("credentials", fields=[
+        ContainerField("credentials", label=_("credentials"), fields=[
             fields.EnumField("role", label=_("role"), choices=[
                 (models.User.Role.BASE, _("BASE")),
                 (models.User.Role.ADMIN, _("ADMIN")),
@@ -25,7 +25,7 @@ class UserView(TortoiseModelView):
             fields.BooleanField("is_email_verified", label=_("is_email_verified"), exclude_from_list=True),
             fields.PasswordField("password", label=_("password"), exclude_from_list=True, exclude_from_detail=True),
         ]),
-        ContainerField("personal_info", [
+        ContainerField("personal_info", label=_("personal_info"), fields=[
             fields.StringField("first_name", label=_("first_name"), exclude_from_list=True),
             fields.StringField("last_name", label=_("last_name"), exclude_from_list=True),
             fields.StringField("nickname", label=_("nickname")),

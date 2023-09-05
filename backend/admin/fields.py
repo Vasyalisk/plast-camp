@@ -18,9 +18,14 @@ class ContainerField(fields.CollectionField):
     exclude_from_list = True
     is_container = True
 
+    def __init__(self, name: str, fields: t.Sequence[fields.BaseField], label=None, required: bool = False):
+        self.label = label
+        super().__init__(name, fields, required)
+
     def parse_obj(self, request, obj):
         return obj
 
+    # TODO: fix nested HasOne / HasMany / Enum fields
     async def parse_form_data(self, request: Request, form_data: FormData, action: RequestAction) -> t.Any:
         data = {}
         for field in self.get_fields_list(request, action):
@@ -33,6 +38,23 @@ class ContainerField(fields.CollectionField):
             action: RequestAction = RequestAction.LIST,
     ) -> t.Sequence[fields.BaseField]:
         return extract_fields(request, self.fields, action)
+
+    # async def serialize_value(
+    #         self, request: Request, value: t.Any, action: RequestAction
+    # ) -> t.Any:
+    #     data = {}
+    #
+    #     for field in self.get_fields_list(request, action):
+    #         if hasattr(value, field.name):
+    #             field_value = getattr(value, field.name)
+    #         else:
+    #             field_value = value[field.name]
+    #
+    #         if field_value is None:
+    #             data[field.name] = await field.serialize_none_value(request, action)
+    #         else:
+    #             data[field.name] = await field.serialize_value(request, field_value, action)
+    #     return data
 
 
 @dataclass
