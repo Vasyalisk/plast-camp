@@ -39,7 +39,7 @@ class EmailAndPasswordProvider(AuthProvider):
         if user is None:
             raise LoginFailed("Invalid username or password")
 
-        if user.role != models.User.Role.ADMIN:
+        if user.role != models.User.Role.SUPER_ADMIN:
             raise FormValidationError({"username": "User has no access to admin panel"})
 
         is_valid = security.verify_password(password, user.password)
