@@ -1,7 +1,7 @@
 from starlette_admin import fields
 
 import models
-from admin.fields import AwareDateTimeField, ContainerField
+from admin.fields import ContainerField, DateField, DateTimeField, EnumField
 from admin.views.base import TortoiseModelView
 from translations import lazy_gettext as _
 
@@ -14,13 +14,13 @@ class UserView(TortoiseModelView):
 
     fields = [
         fields.IntegerField("id", disabled=True, exclude_from_list=True),
-        AwareDateTimeField("created_at", label=_("created_at"), disabled=True),
+        DateTimeField("created_at", label=_("created_at"), disabled=True),
         fields.EmailField("email", label=_("email")),
         ContainerField("credentials", label=_("credentials"), fields=[
-            fields.EnumField("role", label=_("role"), choices=[
-                (models.User.Role.BASE, _("BASE")),
-                (models.User.Role.ADMIN, _("ADMIN")),
-                (models.User.Role.SUPER_ADMIN, _("SUPER_ADMIN")),
+            EnumField("role", label=_("role"), choices_loader=lambda request: [
+                (models.User.Role.BASE.value, str(_("BASE"))),
+                (models.User.Role.ADMIN.value, str(_("ADMIN"))),
+                (models.User.Role.SUPER_ADMIN.value, str(_("SUPER_ADMIN"))),
             ]),
             fields.BooleanField("is_email_verified", label=_("is_email_verified"), exclude_from_list=True),
             fields.PasswordField("password", label=_("password"), exclude_from_list=True, exclude_from_detail=True),
@@ -29,7 +29,7 @@ class UserView(TortoiseModelView):
             fields.StringField("first_name", label=_("first_name"), exclude_from_list=True),
             fields.StringField("last_name", label=_("last_name"), exclude_from_list=True),
             fields.StringField("nickname", label=_("nickname")),
-            fields.DateField("date_of_birth", label=_("date_of_birth"), exclude_from_list=True),
+            DateField("date_of_birth", label=_("date_of_birth"), exclude_from_list=True),
         ]),
         fields.HasOne("country", label=_("country"), identity="country"),
     ]

@@ -3,6 +3,8 @@ from enum import Enum
 from fastapi import Request
 from tortoise import fields, models
 
+import translations
+
 
 class Camp(models.Model):
     """
@@ -35,10 +37,10 @@ class Camp(models.Model):
         date_end = "..."
 
         if self.date_start:
-            date_start = self.date_start.isoformat()
+            date_start = translations.format_date(self.date_start)
 
         if self.date_end:
-            date_end = self.date_end.isoformat()
+            date_end = translations.format_date(self.date_end)
 
         return f"<span>{text}: {date_start} - {date_end}</span>"
 

@@ -234,5 +234,9 @@ class TortoiseModelView(BaseModelView):
 
     async def _configs(self, request: Request) -> t.Dict[str, t.Any]:
         conf = await super()._configs(request)
-        conf["locale"] = translations.get_locale()
+        locale = translations.get_locale()
+        conf["locale"] = locale
+        conf["dt_i18n_url"] = request.url_for(
+            f"{request.app.state.ROUTE_NAME}:statics", path=f"i18n/dt/{locale}.json"
+        )
         return conf

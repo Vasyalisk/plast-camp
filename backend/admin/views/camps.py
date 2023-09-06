@@ -1,7 +1,7 @@
 from starlette_admin import fields
 
 import models
-from admin.fields import AwareDateTimeField
+from admin.fields import DateField, DateTimeField, EnumField
 from admin.views.base import TortoiseModelView
 from translations import lazy_gettext as _
 
@@ -14,9 +14,9 @@ class CampView(TortoiseModelView):
 
     fields = [
         fields.IntegerField("id", disabled=True, exclude_from_create=True),
-        AwareDateTimeField("created_at", label=_("created_at"), disabled=True, exclude_from_create=True),
-        fields.DateField("date_start", label=_("date_start")),
-        fields.DateField("date_end", label=_("date_end")),
+        DateTimeField("created_at", label=_("created_at"), disabled=True, exclude_from_create=True),
+        DateField("date_start", label=_("date_start")),
+        DateField("date_end", label=_("date_end")),
         fields.TextAreaField("description", label=_("description"), maxlength=1024),
         fields.StringField("location", label=_("location"), maxlength=255),
         fields.StringField("name", label=_("name"), maxlength=255),
@@ -38,11 +38,11 @@ class CampMemberView(TortoiseModelView):
 
     fields = [
         fields.IntegerField("id", disabled=True, exclude_from_create=True),
-        AwareDateTimeField("created_at", label=_("created_at"), disabled=True, exclude_from_create=True),
-        fields.EnumField("role", label=_("role"), choices=[
-            (models.CampMember.Role.GUEST, _("GUEST")),
-            (models.CampMember.Role.PARTICIPANT, _("PARTICIPANT")),
-            (models.CampMember.Role.STAFF, _("STAFF")),
+        DateTimeField("created_at", label=_("created_at"), disabled=True, exclude_from_create=True),
+        EnumField("role", label=_("role"), choices_loader=lambda request: [
+            (models.CampMember.Role.GUEST.value, str(_("GUEST"))),
+            (models.CampMember.Role.PARTICIPANT.value, str(_("PARTICIPANT"))),
+            (models.CampMember.Role.STAFF.value, str(_("STAFF"))),
         ]),
         fields.HasOne("camp", label=_("camp"), identity="camp"),
         fields.HasOne("user", label=_("user"), identity="user"),
