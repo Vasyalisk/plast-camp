@@ -30,5 +30,5 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./data/redis:/var/lib/redis
+      - ./data/redis:/data
     command: redis-server --requirepass ${REDIS_PASSWORD} --protected-mode yes
