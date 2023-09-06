@@ -62,7 +62,7 @@ msgstr "Запамʼятай мене"
 #: /usr/local/lib/python3.11/site-packages/starlette_admin/templates/login.html:60
 #: admin/templates/login.html:60
 msgid "Sign in"
-msgstr "Реєстрація"
+msgstr "Увійти"
 
 #: admin/views/camps.py:12 admin/views/camps.py:47
 msgid "camp"
