@@ -1,4 +1,5 @@
 import asyncio
+import os
 import typing as t
 from itertools import chain
 
@@ -91,7 +92,14 @@ def get_related_models(
     }
 
 
-def create_superadmin(email, password):
+def create_superadmin():
+    email = os.environ.get("ADMIN_EMAIL")
+    password = os.environ.get("ADMIN_PASSWORD")
+
+    if not email or password:
+        print("No ADMIN_EMAIL or ADMIN_PASSWORD is set")
+        return
+
     password = security.hash_password(password)
 
     async def _run():
