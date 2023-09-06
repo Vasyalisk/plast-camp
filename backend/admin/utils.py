@@ -96,6 +96,9 @@ def create_superadmin(email, password):
 
     async def _run():
         await Tortoise.init(config=TORTOISE_CONFIG)
-        await models.User.create(email=email, password=password, role=models.User.Role.SUPER_ADMIN)
+        try:
+            await models.User.create(email=email, password=password, role=models.User.Role.SUPER_ADMIN)
+        except Exception:
+            pass
 
     asyncio.run(_run())
