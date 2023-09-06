@@ -29,7 +29,7 @@ class Settings(BaseSettings):
 
     REDIS_HOST: str
     REDIS_PORT: t.Optional[int] = 6379
-    REDIS_PASSWORD: str
+    REDIS_PASSWORD: t.Optional[str] = None
     REDIS_DB: t.Optional[int] = 0
     RESET_CODE_EXPIRES: t.Optional[int] = 600  # 10 min.
 
@@ -52,4 +52,3 @@ class Settings(BaseSettings):
 @lru_cache()
 def settings() -> Settings:
     return Settings()
-
