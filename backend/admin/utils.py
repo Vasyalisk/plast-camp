@@ -1,9 +1,14 @@
+import asyncio
 import typing as t
 from itertools import chain
 
 from fastapi import Request
 from starlette_admin import BaseField, RequestAction
-from tortoise import Model
+from tortoise import Model, Tortoise
+
+import models
+from core import security
+from db.utils import TORTOISE_CONFIG
 
 
 def extract_fields(
@@ -84,3 +89,13 @@ def get_related_models(
         "backward": {k: v["python_type"] for k, v in desc["backward"].items()},
         "many_to_many": {k: v["python_type"] for k, v in desc["many_to_many"].items()},
     }
+
+
+def create_superadmin(email, password):
+    password = security.hash_password(password)
+
+    async def _run():
+        await Tortoise.init(config=TORTOISE_CONFIG)
+        await models.User.create(email=email, password=password, role=models.User.Role.SUPER_ADMIN)
+
+    asyncio.run(_run())

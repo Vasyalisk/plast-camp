@@ -62,3 +62,7 @@ babel-update:
 .PHONE: babel-compile
 babel-compile:
 	@docker compose run --rm backend pybabel compile -d translations/locales
+
+.PHONE: create-admin
+create-admin:
+	@docker compose run --rm backend python -c 'from admin import utils; utils.create_superadmin(email="${email}", password="${password}")'

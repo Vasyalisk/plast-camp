@@ -9,7 +9,6 @@ class User(models.Model):
     Користувач
     """
 
-    # TODO: add fine-grained permissions if needed
     class Role(str, Enum):
         """
         Роль користувача
@@ -55,7 +54,3 @@ class User(models.Model):
     async def __admin_select2_repr__(self, request: Request) -> str:
         # TODO: add translations
         return f"<span>Nickname: {self.nickname or '...'}, name: {self.full_name() or '...'}, id: {self.id}</span>"
-
-    # @property
-    # def username(self) -> str:
-    #     return self.email
