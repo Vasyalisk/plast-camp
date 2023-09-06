@@ -67,7 +67,7 @@ class EmailAndPasswordProvider(AuthProvider):
 
             raise e
 
-        if user.role != models.User.Role.ADMIN:
+        if user.role != models.User.Role.SUPER_ADMIN:
             return False
 
         request.state.user = user
