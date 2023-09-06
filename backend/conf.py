@@ -42,6 +42,9 @@ class Settings(BaseSettings):
 
     LOG_LEVEL: str = "INFO"
 
+    ALLOWED_HOSTS: t.List[str] = ["localhost"]
+    ALLOWED_ORIGINS: t.List[str] = ["*"]
+
     class Config:
         case_sensitive = True
 
