@@ -6,6 +6,7 @@ from itertools import chain
 from fastapi import Request
 from starlette_admin import BaseField, RequestAction
 from tortoise import Model, Tortoise
+from tortoise.exceptions import OperationalError
 
 import models
 from core import security
@@ -93,10 +94,10 @@ def get_related_models(
 
 
 def create_superadmin():
-    email = os.environ.get("ADMIN_EMAIL")
-    password = os.environ.get("ADMIN_PASSWORD")
+    email = os.getenv("ADMIN_EMAIL")
+    password = os.getenv("ADMIN_PASSWORD")
 
-    if not email or password:
+    if not email or not password:
         print("No ADMIN_EMAIL or ADMIN_PASSWORD is set")
         return
 
@@ -106,7 +107,8 @@ def create_superadmin():
         await Tortoise.init(config=TORTOISE_CONFIG)
         try:
             await models.User.create(email=email, password=password, role=models.User.Role.SUPER_ADMIN)
-        except Exception:
-            pass
+            print("Created new superadmin")
+        except OperationalError:
+            print("Superadmin already exists")
 
     asyncio.run(_run())
