@@ -1,4 +1,5 @@
 import os
+import typer
 
 
 def main():
@@ -6,7 +7,7 @@ def main():
     file_names = os.listdir(req_path)
     file_names = [os.path.join(req_path, one) for one in file_names if one.endswith(".in")]
     [sort_file(one) for one in file_names]
-    print(f"Sorted files: {', '.join(file_names)}")
+    typer.echo(f"Sorted files: {', '.join(file_names)}")
 
 
 def sort_file(file_name):

@@ -1,16 +1,14 @@
-import asyncio
-import os
 import typing as t
 from itertools import chain
 
+import typer
 from fastapi import Request
 from starlette_admin import BaseField, RequestAction
-from tortoise import Model, Tortoise
+from tortoise import Model
 from tortoise.exceptions import OperationalError
 
 import models
 from core import security
-from db.utils import TORTOISE_CONFIG
 
 
 def extract_fields(
@@ -18,7 +16,7 @@ def extract_fields(
         fields: t.Sequence["BaseField"],
         action: RequestAction = RequestAction.LIST,
 ) -> t.Sequence["BaseField"]:
-    """Extract fields based on the requested action and exclude flags."""
+    """Extract fields from admin view based on the requested action and exclude flags"""
     arr = []
     for field in fields:
         # Ignore non-editable fields when updating DB model
@@ -53,7 +51,7 @@ def extract_fields(
 
 def describe_related_fields(model: t.Type[Model], related_field_names: t.List[str]) -> t.Dict[str, t.Dict[str, dict]]:
     """
-    Returns described portion of specified fields as Python objects
+    Returns described portion of specified Tortoise ORM fields as Python objects
     See https://tortoise.github.io/fields.html#tortoise.fields.base.Field.describe
     :param model:
     :param related_field_names:
@@ -93,22 +91,15 @@ def get_related_models(
     }
 
 
-def create_superadmin():
-    email = os.getenv("ADMIN_EMAIL")
-    password = os.getenv("ADMIN_PASSWORD")
-
-    if not email or not password:
-        print("No ADMIN_EMAIL or ADMIN_PASSWORD is set")
-        return
-
+async def create_superadmin(email, password):
+    """
+    Utility to create superadmin if not exists
+    :return:
+    """
     password = security.hash_password(password)
 
-    async def _run():
-        await Tortoise.init(config=TORTOISE_CONFIG)
-        try:
-            await models.User.create(email=email, password=password, role=models.User.Role.SUPER_ADMIN)
-            print("Created new superadmin")
-        except OperationalError:
-            print("Superadmin already exists")
-
-    asyncio.run(_run())
+    try:
+        await models.User.create(email=email, password=password, role=models.User.Role.SUPER_ADMIN)
+        typer.echo("Created new superadmin")
+    except OperationalError:
+        typer.echo("Superadmin already exists", err=True)

@@ -15,6 +15,12 @@ TORTOISE_CONFIG = {
 
 
 async def check_connection(attempts=10, timeout=1):
+    """
+    Utility to check if DB is accessible
+    :param attempts:
+    :param timeout:
+    :return:
+    """
     async def _check_once():
         try:
             conn = await asyncpg.connect(settings().DB_URL)

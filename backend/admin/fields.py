@@ -45,7 +45,8 @@ class ContainerField(fields.CollectionField):
 @dataclass
 class DateTimeField(fields.DateTimeField):
     """
-    DateTime field which is localized to / from user timezone.
+    DateTime field which is localized to / from user timezone
+
     Requires timezone variable to be present in the request session
     """
 
@@ -121,6 +122,9 @@ class DateTimeField(fields.DateTimeField):
 
 @dataclass
 class DateField(fields.DateField):
+    """
+    Date field which is formatted according to current user locale
+    """
     async def serialize_value(
             self, request: Request, value: t.Any, action: RequestAction
     ) -> str:
@@ -171,6 +175,9 @@ class DateField(fields.DateField):
 
 @dataclass
 class EnumField(fields.EnumField):
+    """
+    Enum field with custom labels support
+    """
     def _get_label(self, value: t.Any, request: Request) -> t.Any:
         if isinstance(value, Enum) and not self.choices and not self.choices_loader:
             return value.name.replace("_", " ")

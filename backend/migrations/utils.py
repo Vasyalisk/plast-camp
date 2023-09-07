@@ -1,4 +1,3 @@
-import asyncio
 import os
 
 import aerich
@@ -10,6 +9,12 @@ from db import TORTOISE_CONFIG
 
 class ZeroCommand(aerich.Command):
     async def upgrade_zero(self):
+        """
+        Custom aerich command to create and migrate Aerich table on fresh DB
+
+        Default implementation results in bug / error
+        :return:
+        """
         migrations_dir = os.path.join(self.location, self.app)
         _, _, migration_names = next(os.walk(migrations_dir))
 
@@ -33,9 +38,6 @@ class ZeroCommand(aerich.Command):
             content={},
         )
         click.secho(f"Success upgrade {version}", fg=Color.green)
-
-    def upgrade_zero_sync(self):
-        asyncio.run(self.upgrade_zero())
 
 
 command = ZeroCommand(tortoise_config=TORTOISE_CONFIG, app="models")

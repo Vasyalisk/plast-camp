@@ -34,36 +34,68 @@ SEARCH_OPERATORS = {
 }
 
 
-class TortoiseModelView(BaseModelView):
+class LocaleMixin:
+    """
+    Support for custom translation files for admin views
+    """
+    async def _configs(self: BaseModelView, request: Request) -> t.Dict[str, t.Any]:
+        # noinspection PyUnresolvedReferences,PyProtectedMember
+        conf = await super()._configs(request)
+        locale = translations.get_locale()
+        conf["locale"] = locale
+        conf["dt_i18n_url"] = request.url_for(
+            f"{request.app.state.ROUTE_NAME}:statics", path=f"i18n/dt/{locale}.json"
+        )
+        return conf
+
+
+class TortoiseModelView(LocaleMixin, BaseModelView):
+    """
+    Admin view adapter for Tortoise ORM
+    """
     model: t.Type[Model] = None
+    # Using id keyword, since Tortoise has limited support for pk, in particular Model.filter(...) doesn't recognise it
     pk_attr = "id"
 
     def format_search_string(self, search: str) -> models.Q:
+        # TODO: implement full text search
         return models.Q(email=search)
 
-    def format_search_kwarg(self, kwarg, value: t.Union[dict, t.List[dict]]) -> models.Q:
-        if kwarg == "and":
+    def format_search_kwarg(self, kwarg: str, value: t.Union[dict, t.List[dict]]) -> models.Q:
+        """
+        Recursive function to format params from search builder into Tortoise Q-filters
+        :param kwarg: either "and", "or" or field name
+        :param value: either dict with condition-value pair or list of sub-kwarg conditions
+        :return:
+        """
+        if kwarg in ("and", "or"):
             sub_kwargs = []
-            for one in value:
-                key, val = tuple(one.items())[0]
-                sub_kwargs.append(self.format_search_kwarg(key, val))
-            return models.Q(*sub_kwargs, join_type=models.Q.AND)
 
-        if kwarg == "or":
-            sub_kwargs = []
             for one in value:
                 key, val = tuple(one.items())[0]
                 sub_kwargs.append(self.format_search_kwarg(key, val))
-            return models.Q(*sub_kwargs, join_type=models.Q.OR)
+
+            join_type = models.Q.AND if kwarg == "and" else models.Q.OR
+            return models.Q(*sub_kwargs, join_type=join_type)
 
         condition, condition_value = tuple(value.items())[0]
         return SEARCH_OPERATORS[condition](kwarg, condition_value)
 
     def format_search_filter(self, search: dict) -> t.List[models.Q]:
+        """
+        Helper function to unpack top search kwarg and pass it to format_search_kwarg
+        :param search:
+        :return:
+        """
         kwarg, value = tuple(search.items())[0]
         return [self.format_search_kwarg(kwarg, value)]
 
     def format_order_by(self, order_by: t.List[str]) -> t.List[str]:
+        """
+        Format admin ordering into Tortoise ORM ordering
+        :param order_by:
+        :return:
+        """
         for field in order_by:
             name, suffix = field.split(" ")
             if suffix == "desc":
@@ -94,6 +126,12 @@ class TortoiseModelView(BaseModelView):
     async def load_relations(
             self, data: t.Dict[str, t.Any], described_relations: t.Dict[str, t.Dict[str, dict]]
     ) -> None:
+        """
+        Replace related object ids with DB model instances
+        :param data:
+        :param described_relations:
+        :return:
+        """
         described_relations_it = chain(
             described_relations["forward"].items(),
             described_relations["backward"].items(),
@@ -141,12 +179,31 @@ class TortoiseModelView(BaseModelView):
                 **{related_fk: model.pk})
 
     def get_queryset(self, request: Request) -> QuerySet:
+        """
+        Queryset used in list and detail views to load DB objects
+
+        Override to load all necessary relations for list / detail view
+        :param request:
+        :return:
+        """
         return self.model.all()
 
     def get_count_queryset(self, request: Request) -> QuerySet:
+        """
+        Queryset used in list view to count DB objects
+
+        Override to count object without loading unnecessary relations
+        :param request:
+        :return:
+        """
         return self.model.all()
 
     def get_delete_queryset(self, request: Request) -> QuerySet:
+        """
+        Queryset used to delete particular DB objects
+        :param request:
+        :return:
+        """
         return self.model.all()
 
     async def count(
@@ -202,6 +259,7 @@ class TortoiseModelView(BaseModelView):
 
         model = await self.model.create(**self.extract_safe_data(data, descr))
 
+        # M2M and backward relations can't be updated created prior to model creation
         await self.update_many_to_many_relations(model, data, descr["many_to_many"])
         await self.update_backward_relations(model, data, descr["backward"])
         return model
@@ -216,6 +274,7 @@ class TortoiseModelView(BaseModelView):
         model = model.update_from_dict(self.extract_safe_data(data, descr))
         await model.save()
 
+        # M2M and backward relations can't be updated created prior to model creation
         await self.update_many_to_many_relations(model, data, descr["many_to_many"])
         await self.update_backward_relations(model, data, descr["backward"])
         return model
@@ -231,12 +290,3 @@ class TortoiseModelView(BaseModelView):
         :return:
         """
         return extract_fields(request, self.fields, action)
-
-    async def _configs(self, request: Request) -> t.Dict[str, t.Any]:
-        conf = await super()._configs(request)
-        locale = translations.get_locale()
-        conf["locale"] = locale
-        conf["dt_i18n_url"] = request.url_for(
-            f"{request.app.state.ROUTE_NAME}:statics", path=f"i18n/dt/{locale}.json"
-        )
-        return conf

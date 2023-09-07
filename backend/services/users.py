@@ -27,7 +27,7 @@ class Detail(BaseService):
         user = await models.User.get_or_none(id=user_id).select_related("country")
 
         if user is None:
-            self.raise_404()
+            raise self.HttpException404()
 
         return user
 
@@ -71,7 +71,7 @@ class Filter(BaseService):
         is_valid = await models.Country.filter(id=country_id).exists()
 
         if not is_valid:
-            self.raise_400(errors.INVALID_COUNTRY_ID)
+            raise self.HttpException400(errors.INVALID_COUNTRY_ID)
 
     def format_age_filter(self, age: int) -> models.Q:
         dob_min = date.today() - relativedelta(years=age)
@@ -143,17 +143,17 @@ class Create(BaseService):
         exists = await models.User.filter(email=email).exists()
 
         if exists:
-            self.raise_400(errors.DUPLICATE_EMAIL)
+            raise self.HttpException400(errors.DUPLICATE_EMAIL)
 
     async def validate_country_id(self, country_id: int):
         is_valid = await models.Country.filter(id=country_id).exists()
 
         if not is_valid:
-            self.raise_400(errors.INVALID_COUNTRY_ID)
+            raise self.HttpException400(errors.INVALID_COUNTRY_ID)
 
     async def validate_permission(self, user: models.User):
         if user.role != models.User.Role.SUPER_ADMIN:
-            self.raise_403()
+            raise self.HttpException403()
 
 
 class Delete(BaseService):
@@ -161,11 +161,11 @@ class Delete(BaseService):
         creator = await authorize.user_or_401()
 
         if creator.role != models.User.Role.SUPER_ADMIN:
-            self.raise_403()
+            raise self.HttpException403()
 
         user = await models.User.get_or_none(id=user_id)
         if user is None:
-            self.raise_404()
+            raise self.HttpException404()
 
         await user.delete()
 
@@ -182,7 +182,7 @@ class Membership(BaseService):
 
         user_exists = models.User.exists(id=user_id)
         if not user_exists:
-            self.raise_404()
+            raise self.HttpException404()
 
         queryset = models.CampMember.filter(user_id=user_id).select_related("camp__country")
         queryset = queryset.order_by(*self.format_order(order_by))

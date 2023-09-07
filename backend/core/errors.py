@@ -1,3 +1,7 @@
+"""
+List of custom returned API error texts
+"""
+
 INVALID_CODE = "Invalid code"
 INVALID_COUNTRY_ID = "Invalid country_id"
 INVALID_LOGIN = "Invalid email or password"

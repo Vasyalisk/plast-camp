@@ -26,6 +26,17 @@ class PaginatedQuery(BaseModel):
             exclude_defaults: bool = False,
             exclude_none: bool = False,
     ) -> t.Dict:
+        """
+        Utility to return specified query fields not related to pagination
+        :param include:
+        :param exclude:
+        :param by_alias:
+        :param skip_defaults:
+        :param exclude_unset:
+        :param exclude_defaults:
+        :param exclude_none:
+        :return:
+        """
         if exclude is None:
             exclude = set()
 

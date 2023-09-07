@@ -21,7 +21,6 @@ class Camp(models.Model):
     name = fields.CharField(max_length=255)
 
     country = fields.ForeignKeyField("models.Country", on_delete=fields.SET_NULL, null=True, default=None)
-
     # TODO: add url to badge image if any
 
     async def __admin_repr__(self, request: Request) -> str:

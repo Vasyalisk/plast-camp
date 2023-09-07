@@ -8,7 +8,7 @@ migrate:
 
 .PHONY: upgrade-zero
 upgrade-zero:
-	@docker compose run --rm backend python -c 'from migrations import utils; utils.command.upgrade_zero_sync()'
+	@docker compose run --rm backend python manage.py upgrade-zero-migration
 
 .PHONY: upgrade
 upgrade:
@@ -63,6 +63,6 @@ babel-update:
 babel-compile:
 	@docker compose run --rm backend pybabel compile -d translations/locales
 
-.PHONE: create-admin
-create-admin:
-	@docker compose run --rm backend python -c 'from admin import utils; utils.create_superadmin(email="${email}", password="${password}")'
+.PHONE: create-superadmin
+create-superadmin:
+	@docker compose run --rm backend python manage.py create-superadmin

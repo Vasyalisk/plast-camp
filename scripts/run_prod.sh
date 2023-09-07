@@ -1,7 +1,7 @@
 #! /usr/bin/bash
 
 pybabel compile -d translations/locales
-python -c 'from migrations import utils; utils.command.upgrade_zero_sync()'
+python manage.py upgrade-zero-migration
 aerich upgrade
-python -c 'from admin import utils; utils.create_superadmin()'
+python manage.py create-default-superadmin
 uvicorn main:app --host ${HOST:-0.0.0.0} --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*'

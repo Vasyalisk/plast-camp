@@ -11,6 +11,11 @@ from core import security
 
 
 class EmailAndPasswordProvider(AuthProvider):
+    """
+    Provider to let users login to admin panel
+
+    Only superadmins (see models.User.Role) with filled-in email are allowed
+    """
     def __init__(
             self,
             login_path: str = "/login",
@@ -22,6 +27,7 @@ class EmailAndPasswordProvider(AuthProvider):
         if self.allow_paths is None:
             self.allow_paths = []
 
+        # JS to support timezone
         self.allow_paths.extend([
             "/statics/js/vendor/moment.min.js",
             "/statics/js/vendor/moment-timezone-with-data-10-year-range.js",
@@ -49,7 +55,7 @@ class EmailAndPasswordProvider(AuthProvider):
         timezone: str = (await request.form()).get("timezone", "UTC")
         request.session.update({
             "token": security.Authorize().create_access_token(user.id),
-            "timezone": timezone,
+            "timezone": timezone,  # store user timezone on initial login
         })
         return response
 

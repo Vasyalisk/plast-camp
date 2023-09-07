@@ -14,6 +14,9 @@ from translations.middleware import LocaleMiddleware
 
 
 class Admin(BaseAdmin):
+    """
+    Admin app which overrides built-in translations
+    """
     def init_locale(self) -> None:
         pass
 
@@ -30,6 +33,7 @@ def mount_admin(app: FastAPI):
         auth_provider=EmailAndPasswordProvider(),
         middlewares=[
             Middleware(SessionMiddleware, secret_key=settings().SECRET_KEY),
+            # Use LocaleMiddleware explicitly instead of default implicit implementation
             Middleware(
                 LocaleMiddleware,
                 default_locale=settings().TRANSLATION_DEFAULT_LOCALE,

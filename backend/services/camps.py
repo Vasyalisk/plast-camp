@@ -14,7 +14,7 @@ class Detail(BaseService):
 
         camp = await models.Camp.get_or_none(id=camp_id).select_related("country")
         if camp is None:
-            self.raise_404()
+            raise self.HttpException404()
 
         return schemas.camps.DetailResponse.from_orm(camp)
 
@@ -25,7 +25,7 @@ class Create(BaseService):
 
         can_create = user.role in (models.User.Role.ADMIN, models.User.Role.SUPER_ADMIN)
         if not can_create:
-            self.raise_403()
+            raise self.HttpException403()
 
         await self.validate_country(body.country_id)
 
@@ -40,7 +40,7 @@ class Create(BaseService):
 
         country_exists = await models.Country.exists(id=country_id)
         if not country_exists:
-            self.raise_400(errors.INVALID_COUNTRY_ID)
+            raise self.HttpException400(errors.INVALID_COUNTRY_ID)
 
 
 class Delete(BaseService):
@@ -49,11 +49,11 @@ class Delete(BaseService):
 
         can_delete = user.role in (models.User.Role.ADMIN, models.User.Role.SUPER_ADMIN)
         if not can_delete:
-            self.raise_403()
+            raise self.HttpException403()
 
         deleted_count = await models.Camp.filter(id=camp_id).delete()
         if not deleted_count:
-            self.raise_404()
+            raise self.HttpException404()
 
 
 class Filter(BaseService):
@@ -86,7 +86,7 @@ class Filter(BaseService):
     async def validate_country_id(self, country_id):
         exists = await models.Country.exists(id=country_id)
         if not exists:
-            self.raise_400(errors.INVALID_COUNTRY_ID)
+            raise self.HttpException400(errors.INVALID_COUNTRY_ID)
 
     def format_search_filter(self, search: str) -> models.Q:
         return models.Q(location__icontains=search, name__icontains=search, join_type=models.Q.OR)

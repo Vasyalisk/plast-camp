@@ -7,6 +7,11 @@ from translations.utils import set_locale
 
 
 class LocaleMiddleware:
+    """
+    Middleware to set request locale
+
+    Default one is used if locale is not in the allowed list
+    """
     def __init__(
             self,
             app: ASGIApp,
@@ -32,14 +37,14 @@ class LocaleMiddleware:
                 and conn.cookies.get(self.language_cookie, None)
                 in self.locales
         ):
-            """detect locale in cookies"""
+            # detect locale in cookies
             locale = conn.cookies.get(self.language_cookie)
         elif (
                 self.language_header
                 and conn.headers.get(self.language_header, None)
                 in self.locales
         ):
-            """detect locale in headers"""
+            # detect locale in headers
             locale = conn.headers.get(self.language_header)
         set_locale(locale or self.default_locale)
         await self.app(scope, receive, send)

@@ -17,10 +17,11 @@ class JwtConfig(BaseModel):
     authjwt_access_token_expires: int = settings().ACCESS_TOKEN_EXPIRES
     authjwt_refresh_token_expires: int = settings().REFRESH_TOKEN_EXPIRES
 
-
+# Dependency to parse Authorization header
 AuthorizationHeader = APIKeyHeader(name="Authorization", auto_error=False)
 
 
+# Dependency to authenticate and authorize user based on Authorization header or cookies
 class Authorize(AuthJWT):
     class Strategy(str, Enum):
         ACCESS_TOKEN = "ACCESS_TOKEN"

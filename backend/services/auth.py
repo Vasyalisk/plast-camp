@@ -42,14 +42,14 @@ class ConfirmRegistration(BaseService):
         user_id = await redis.check_code(code, redis.CodeType.REGISTER)
 
         if user_id is None:
-            self.raise_400(errors.INVALID_CODE)
+            raise self.HttpException400(errors.INVALID_CODE)
 
         await redis.delete_code(code, redis.CodeType.REGISTER)
 
         try:
             user_id = int(user_id)
         except ValueError:
-            self.raise_400(errors.INVALID_CODE)
+            raise self.HttpException400(errors.INVALID_CODE)
 
         return user_id
 
@@ -57,7 +57,7 @@ class ConfirmRegistration(BaseService):
         user = await models.User.get_or_none(id=user_id)
 
         if user is None:
-            self.raise_400(errors.INVALID_CODE)
+            raise self.HttpException400(errors.INVALID_CODE)
 
         return user
 
@@ -77,7 +77,7 @@ class Login(BaseService):
         user = await models.User.get_or_none(email=email)
 
         if user is None:
-            self.raise_401(errors.INVALID_LOGIN)
+            raise self.HttpException401(errors.INVALID_LOGIN)
 
         return user
 
@@ -85,7 +85,7 @@ class Login(BaseService):
         is_valid = security.verify_password(plain_password, hashed_password)
 
         if not is_valid:
-            self.raise_401(errors.INVALID_LOGIN)
+            raise self.HttpException401(errors.INVALID_LOGIN)
 
 
 class ChangePassword(BaseService):
@@ -99,7 +99,7 @@ class ChangePassword(BaseService):
         is_valid = security.verify_password(plain_password, hashed_password)
 
         if not is_valid:
-            self.raise_401(errors.INVALID_PASSWORD)
+            raise self.HttpException401(errors.INVALID_PASSWORD)
 
 
 class ForgotPassword(BaseService):
@@ -125,14 +125,14 @@ class ResetPassword(BaseService):
         user_id = await redis.check_code(code, redis.CodeType.FORGOT_PASSWORD)
 
         if user_id is None:
-            self.raise_400(errors.INVALID_CODE)
+            raise self.HttpException400(errors.INVALID_CODE)
 
         await redis.delete_code(code, redis.CodeType.FORGOT_PASSWORD)
 
         try:
             user_id = int(user_id)
         except ValueError:
-            self.raise_400(errors.INVALID_CODE)
+            raise self.HttpException400(errors.INVALID_CODE)
 
         return user_id
 
@@ -140,6 +140,6 @@ class ResetPassword(BaseService):
         user = await models.User.get_or_none(id=user_id)
 
         if user is None:
-            self.raise_400(errors.INVALID_CODE)
+            raise self.HttpException400(errors.INVALID_CODE)
 
         return user
