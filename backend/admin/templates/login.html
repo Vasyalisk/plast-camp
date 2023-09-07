@@ -65,7 +65,7 @@
 </div>
 {% endblock %}
 {% block script%}
-{{ super }}
+{{ super() }}
 <script type="text/javascript" src="{{ url_for(__name__ ~ ':statics', path='js/vendor/moment.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for(__name__ ~ ':statics', path='js/vendor/moment-timezone-with-data-10-year-range.js') }}"></script>
 <script>
