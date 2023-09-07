@@ -1,3 +1,9 @@
 services:
   backend:
     command: "true"
+    volumes:
+      - ./backend:/backend
+      - ./requirements:/requirements
+      - ./scripts:/scripts
+    env_file:
+      - .env.test
